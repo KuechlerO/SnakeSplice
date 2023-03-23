@@ -1,0 +1,8 @@
+name: private_junction_detection_env
+channels:
+  - bioconda
+dependencies:
+  - regtools
+  - pandas
+  - bedtools
+  - bedops

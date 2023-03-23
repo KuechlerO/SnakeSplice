@@ -1,0 +1,32 @@
+# =============== 1. Switch variables =============
+
+# **Important**:
+# Submodule 1 has to be run first alone, as the output of this submodule is
+# used as input for the other submodules. Subsequently, the other modules can be run in (almost) any order.
+
+module_switches:
+  # ------- 1.1 Module: Quality-Control, Preprocessing, and Alignment --------
+  run_module1_qc_preprocessing_and_alignment: True
+
+  # ------- 1.2 Module: Detection of gene fusion events ---------
+  run_module2_gene_fusion_detection: False
+
+  # ------- 1.3 Module: Detection and Quantification of gene products (transcripts) and analysis ---------
+  run_module3_gene_expression_quantification_and_analysis: False
+
+  # ------- 1.4 Module: Splicing Patterns Analysis ---------
+  run_module4_splicing_pattern_analysis: False
+
+
+# =============== 2. Module output directory names =================
+module_output_dir_names:
+  output_dir_module0_report_generation:
+    "output/module0_report_generation"
+  output_dir_module1_qc_preprocessing_and_alignment:
+    "output/module1_qc_preproc_and_alignment"
+  output_dir_module2_gene_fusion_detection:
+    "output/module2_gene_fusion_detection"
+  output_dir_module3_gene_expression_quantification_and_analysis:
+    "output/module3_gene_expression_quantification_and_analysis"
+  output_dir_module4_splicing_patterns_analysis:
+    "output/module4_splicing_patterns_analysis"

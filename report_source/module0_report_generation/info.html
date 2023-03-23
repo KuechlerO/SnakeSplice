@@ -1,0 +1,46 @@
+<div class="output_documentation_box">
+
+    <h3>Output Documentation</h3>
+
+    <p>
+        A simple overview of your given sample input is given.
+        Each row represents a single sample.
+    </p>
+    <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDiv"
+            aria-expanded="false" aria-controls="collapseDiv">
+        Show details
+    </button>
+
+    <div class="collapse" id="collapseDiv">
+        <h5 class="pt-5">Column descriptions:</h5>
+        <ol class="list-group pb-5">
+            <li class="list-group-item"><b>sample name: </b>The name of the analyzed sample.</li>
+            <li class="list-group-item"><b>sample_directory: </b>Directory, where the data (i.e. FASTA files) for the given samples are stored.</li>
+            <li class="list-group-item"><b>read1: </b>File name of FASTA file for first reads.</li>
+            <li class="list-group-item"><b>read2: </b>File name of FASTA file for second reads.</li>
+            <li class="list-group-item"><b>control: </b>This columns whether the given sample can be used as control sample.</li>
+            <li class="list-group-item"><b>condition: </b>The underlying condition for the given sample.</li>
+            <li class="list-group-item"><b>protocol: </b>The used protocol for the RNAseq library preparation.</li>
+            <li class="list-group-item"><b>stranded: </b>State whether the given sample data is unstranded ("no"), forward stranded ("yes"), or reverse stranded ("reverse").</li>
+            <li class="list-group-item"><b>adaptors_file: </b>Path to FASTA file, where adaptor sequences are stored, which will be used for the cutoff with trimmomatic.</li>
+            <li class="list-group-item"><b>additional_comment: </b>More space for additional comments.</li>
+        </ol>
+
+        <h5>Method:</h5>
+        <p>
+            <a href="http://pep.databio.org/en/latest/">PEP</a>, or Portable Encapsulated Projects, is a community
+            effort to make sample metadata reusable. PEPs decouple metadata from analysis by providing:
+            <ul>
+                <li>a standardized metadata structure;</li>
+                <li>a metadata validation framework;</li>
+                <li>programatic metadata modifiers.</li>
+             </ul>
+        </p>
+        <p>
+            This workflow takes advantage of the PEP metadata structure to provide a standardized way to
+            describe your samples.
+        </p>
+
+    </div>
+
+</div>

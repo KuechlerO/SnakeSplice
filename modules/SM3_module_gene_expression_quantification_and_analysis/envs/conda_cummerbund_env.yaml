@@ -1,0 +1,40 @@
+name: cummerbund_env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - bioconductor-annotationdbi
+  - bioconductor-annotationfilter
+  - bioconductor-biobase
+  - bioconductor-biocfilecache
+  - bioconductor-biocgenerics
+  - bioconductor-biocio
+  - bioconductor-biocparallel
+  - bioconductor-biomart
+  - bioconductor-biostrings
+  - bioconductor-biovizbase
+  - bioconductor-bsgenome
+  - bioconductor-cummerbund
+  - bioconductor-delayedarray
+  - bioconductor-ensembldb
+  - bioconductor-genomeinfodb
+  - bioconductor-genomeinfodbdata
+  - bioconductor-genomicalignments
+  - bioconductor-genomicfeatures
+  - bioconductor-genomicranges
+  - bioconductor-gviz
+  - bioconductor-iranges
+  - bioconductor-keggrest
+  - bioconductor-matrixgenerics
+  - bioconductor-protgenerics
+  - bioconductor-rhtslib
+  - bioconductor-rsamtools
+  - bioconductor-rtracklayer
+  - bioconductor-s4vectors
+  - bioconductor-summarizedexperiment
+  - bioconductor-variantannotation
+  - bioconductor-xvector
+  - bioconductor-zlibbioc
+  - r-base=4.1.2
+  - r-biocmanager

@@ -1,0 +1,18 @@
+# --------- Basic settings --------
+name: "SnakeSplice"
+pep_version: 2.1.0
+sample_table:
+  "../input_data/input_data.csv"
+
+
+sample_modifiers:
+  derive:
+  # Manipulate existing entries: E.g. setting dynamically output file paths!
+  # -> values in brackets are replaced by other attribute values!
+    attributes: [sample_directory, adaptors_file]  # attributes to consider
+    sources:
+      # Variables for <sample_directory>
+      local_test_dir: "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test"
+
+      # Variables for <adaptors_file>
+      standard_adaptors_local: "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/input_data/sequencing_adaptors/illumina_adaptor_sequences.fa"

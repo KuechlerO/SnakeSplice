@@ -1,0 +1,6 @@
+name: subread_env
+channels:
+  - bioconda
+dependencies:
+- subread
+- pandas

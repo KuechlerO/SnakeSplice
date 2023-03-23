@@ -1,0 +1,27 @@
+# - Currently this file is not leveraged...
+# -> Would need to add {params.partition} in sbatch command
+# However, this would interfere with wrapper cases, which use all passed parameters...
+
+# Cluster partition configuration file
+# 1.) Sets default partition for every rule
+# 2.) Specific partitions for specific rules can be set
+
+
+# ------ Partitions on Charite Cluster ------------ #
+# Partition                          Nodes     DefaultMem/CPU  MaxMem/CPU    DefaultTime     MaxTime
+# Default: compute                   11         2048            4096        02:00:00        07:00:00
+# gpu (NVIDIA A100 40G GPU per node) 21         2048            4096        02:00:00        07:00:00
+# pgpu (multi GPUs per node)          2         2048            8192        02:00:00        07:00:00
+
+# __default__: compute
+
+
+# ================ Integration into Snakemake-Main ===================== #
+# ---------------- Load cluster partitions ------------------
+# Loads partition settings
+#with open('charite_hpc_profile/cluster_partition.yaml', 'r') as file_stream:
+#    partitions = yaml.safe_load(file_stream)
+#
+## Getter of partition settings
+#def get_partition(rule_name):
+#    return partitions[rule_name] if rule_name in partitions else partitions['__default__']

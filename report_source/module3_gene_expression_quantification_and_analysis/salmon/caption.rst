@@ -1,0 +1,3 @@
+`Salmon <https://combine-lab.github.io/salmon/>`_ is a tool for quantifying the expression of transcripts using RNA-seq data.
+Salmon uses new algorithms (specifically, coupling the concept of quasi-mapping with a two-phase inference procedure) to provide accurate expression estimates very quickly (i.e. wicked-fast) and while using little memory.
+Salmon performs its inference using an expressive and realistic model of RNA-seq data that takes into account experimental attributes and biases commonly observed in real RNA-seq data.

@@ -1,0 +1,120 @@
+<div class="output_documentation_box">
+
+    <h3>Output Documentation</h3>
+
+    <p>
+        Result of the analysis of differentially expressed genes.
+        Quantification of the differentially expressed genes was done with Kallisto, while
+        the differential expression analysis was done with DESeq2.
+        Only significant differentially expressed genes (adjusted p-value < 0.10)  are shown.
+        The experiment was done between the annotated control samples and one given condition (see workflow
+        annotation).
+    </p>
+    <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDiv"
+            aria-expanded="false" aria-controls="collapseDiv">
+        Show details
+    </button>
+
+    <div class="collapse" id="collapseDiv">
+        <h5 class="pt-5">Column descriptions:</h5>
+        <p>
+            For more information about the columns, please refer to the
+            <a href="https://www.gsea-msigdb.org/gsea/doc/GSEAUserGuideTEXT.htm">GSEA User Guide</a> in the
+            section "Detailed Enrichment Results".
+        </p>
+        <ol class="list-group pb-5">
+            <li class="list-group-item"><b>X & ID: </b>Identifier which depicts a certain gene set of the
+                respective database (GO: Gene Ontology; KEGG: Kyoto Encyclopedia of Genes and Genomes;
+                WP: WikiPathways).</li>
+            <li class="list-group-item"><b>Description: </b>Description of the gene set that is referred to in the
+                the current row.</li>
+            <li class="list-group-item"><b>setSize: </b>
+                Number of genes in the gene set after filtering out those genes not in the expression dataset
+            </li>
+            <li class="list-group-item"><b>enrichmentScore: </b>
+                The enrichment score (ES) reflects the degree to which a gene set S is overrepresented at the extremes
+                (top or bottom) of the entire ranked (by expression) list of genes.
+                The score is calculated by walking down the list, increasing a running-sum statistic when we encounter
+                a gene in S and decreasing it when we encounter genes not in S.
+                The enrichment score is the maximum deviation from zero encountered in the random walk.
+            </li>
+            <li class="list-group-item"><b>NES: </b>
+                The Normalized Enrichment Score (NES).
+                By normalizing the enrichment score, GSEA accounts for differences in gene set size and in
+                correlations between gene sets and the expression dataset;
+                therefore, the normalized enrichment scores (NES) can be used to compare analysis results across
+                gene sets.
+            </li>
+            <li class="list-group-item"><b>pvalue: </b>
+                Nominal p value; that is, the statistical significance of the enrichment score.
+                The nominal p value is not adjusted for gene set size or multiple hypothesis testing; therefore,
+                it is of limited use in comparing gene sets.
+            </li>
+            <li class="list-group-item"><b>p.adjust: </b>
+                Familywise-error rate; that is, a more conservatively estimated probability that the normalized
+                enrichment score represents a false positive finding. Because the goal of GSEA is
+                to generate hypotheses, the GSEA team recommends focusing on the FDR statistic.
+            </li>
+            <li class="list-group-item"><b>q.value: </b>
+                False discovery rate; that is, the estimated probability that the normalized enrichment
+                score represents a false positive finding.
+            </li>
+            <li class="list-group-item"><b>rank: </b>
+                The position in the ranked list at which the maximum enrichment score occurred.
+                The more interesting gene sets achieve the maximum enrichment score near the top
+                or bottom of the ranked list; that is, the rank at max is either very small or very large.
+            </li>
+            <li class="list-group-item"><b>leading_edge: </b>
+                The leading-edge subset is defined as those genes in the gene set S that appear in the ranked list L
+                at, or before, the point where the running sum reaches its maximum deviation from zero ( Fig. 1B).
+                The leading-edge subset can be interpreted as the core of a gene set that accounts for the
+                enrichment signal.
+                <br><br>
+                Displays the three statistics used to define the leading edge subset:
+                <ol>
+                    <li>
+                        Tags. The percentage of gene hits before (for positive ES) or after (for negative ES) the
+                        peak in the running enrichment score. This gives an indication of the percentage
+                        of genes contributing to the enrichment score.
+                    </li>
+                    <li>
+                        List. The percentage of genes in the ranked gene list before (for positive ES) or after
+                        (for negative ES) the peak in the running enrichment score. This gives an indication of
+                        where in the list the enrichment score is attained.
+                    </li>
+                    <li>
+                        Signal. The enrichment signal strength that combines the two previous statistics.
+                        See <a href="https://www.gsea-msigdb.org/gsea/doc/GSEAUserGuideTEXT.htm">here</a> for
+                        more details.
+                    </li>
+                </ol>
+                These statistics describe the leading-edge subset of a single gene set.
+            </li>
+            <li class="list-group-item"><b>core_enrichment: </b>
+                Genes that contribute to the leading-edge subset within the gene set.
+                This is the subset of genes that contributes most to the enrichment result.
+            </li>
+        </ol>
+
+        <h5>Method:</h5>
+        <p>
+            <a href="https://combine-lab.github.io/salmon/">Salmon</a> is a tool for quantifying the expression of
+            transcripts using RNA-seq data.
+            Salmon uses new algorithms (specifically, coupling the concept of quasi-mapping with a two-phase
+            inference procedure) to provide accurate expression estimates very quickly (i.e. wicked-fast) and while
+            using little memory.
+            Salmon performs its inference using an expressive and realistic model of RNA-seq data that takes
+            into account experimental attributes and biases commonly observed in real RNA-seq data.
+        </p>
+        <p>
+            The <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8">
+                Gene Set Enrichment Analysis (GSEA)
+            </a> is a computational method that determines whether an a priori defined set of genes shows statistically
+            significant, concordant differences between two biological states
+            (e.g. phenotypes).
+            The method derives its power by focusing on gene sets, that is, groups of genes that share common
+            biological function, chromosomal location, or regulation.
+        </p>
+    </div>
+
+</div>

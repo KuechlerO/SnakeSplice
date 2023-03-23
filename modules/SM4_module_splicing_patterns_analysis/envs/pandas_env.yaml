@@ -1,0 +1,7 @@
+name: pandas_env
+
+channels:
+  - anaconda
+
+dependencies:
+  - pandas

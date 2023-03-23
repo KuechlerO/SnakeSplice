@@ -1,0 +1,199 @@
+# =============== Configuration file for module: Splicing Patterns analysis =============
+# Use this config-file to switch on/off the features that you need for your personal research.
+# Furthermore, you can set the detailed parameters for the respective features.
+
+module4_splicing_patterns_analysis_settings:
+  # =============== 1. Module wide settings =============
+
+  # =============== 1.1 Switch variables =============
+  switch_variables:
+    run_dexseq_analysis: False
+    run_fraser_analysis: False
+    run_irfinder_analysis: False
+    run_leafcutter_analysis: False
+    run_private_junction_detection: False
+    run_rmats: True
+    run_overall_summary: True
+
+  # =============== 1.2 Output directories =============
+  # The output directories for the respective tool-outputs are defined here.
+  # This is important for importing the outputs into the GUI
+  output_directories:
+    leafcutter_output_dir: "leafcutter"
+    dexseq_output_dir: "dexseq"
+    fraser_output_dir: "fraser"
+    irfinder_output_dir: "irfinder"
+    private_junction_detection_output_dir: "private_junction_detection"
+    rmats_output_dir: "rmats"
+    summary_output_dir: "overall_summary"
+
+
+  # =============== 1.3 BAM files =============
+  # ATTENTION: Use absolute paths when defining input file paths!!!
+
+  # Directory, where the alignment results are stored
+  # Choices:
+  #   1. star               - Uses the STAR-alignment results
+  #   2. olego              - Uses the Olego-alignment results
+  #   3. directory-URI      - Searches the given directory for BAM-files
+  # Expects for every sample to have a subdirectory with the same name as the sample name (see following example)!
+  # E.g. dir: "output/star" -> expects as input: "output/star/{sample}/{sample}.sorted.bam"
+  input_dir_of_bam_files:
+  # "star"
+  # "olego"
+  # "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/output/module_qc_preproc_and_alignment/output/star"
+    "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/output/module1_qc_preproc_and_alignment/output/olego"
+
+  # Attributes of aligned files (input BAM files)
+  bam_files_attributes:
+    filename_extension:   # File extension of the input BAM files
+      ".sorted.bam"
+    paired:
+      True          # Either True or False
+    sorted:
+      "position"      # Either position (for position-sorted) or name (for name-sorted)
+
+
+
+  # ======================== 2. Tool specific settings =============
+    # =============== 2.1 Leafcutter settings =============
+  leafcutter_settings:
+
+    # =============== 2.1.1 Leafcutter general settings =============
+    # Directory, where the leafcutter program is placed / or going to be installed into
+    # Expects: Subdirectory "leafcutter", which contains the Leafcutter installation
+    # -> If Leafcutter is requested: Either provide a path to a pre-installed olego-version, or let
+    # Snakemake automatically install it for you.
+    leafcutter_installation_dir:
+      "/sc-scratch/sc-scratch-btg/olik_splicing_project/splice-prediction/snakemake_workflows/Snakemake_Main/lib"
+    # "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/lib"
+
+    # Directory name for leafcutter output
+    leafcutter_project_output_dir:
+      "leafcutter_output"
+
+    # Reference genome annotation file, that is used to annotate the final results
+    reference_genome_annotation_file:
+      # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/annotation_files/hg19.ncbiRefSeq.gtf"
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ncbi_sourced/GRCh37_latest_genomic.gtf"
+
+    # =============== 2.1.2. Regtools: Junction file creation =============
+    regtools_settings:
+      # Junctions, which a minimum overlap length on both sides for the reads are considered as valid
+      regtools_junctions_anchor_length: 8                 # Default: 8
+      # Minimum/Maximum required intron length -> Intron size = junction.end - junction.start
+      regtools_junctions_minimum_intron_length: 50        # Default: 50
+      regtools_junctions_maximum_intron_length: 500000    # Default: 500000
+
+
+    # =============== 2.1.3 Leafcutter clustering =============
+    leafcutter_clustering_supporting_split_reads: 8   # Supporting split reads needed for a cluster to be considered
+    leafcutter_clustering_maximum_intron_length: 500000   # Intron size = junction.end - junction.start
+    output_prefix: "all"                                    # Prefix for cluster file
+
+    # =============== 2.1.4 Leafcutter splicing analysis =============
+    leafcutter_max_cluster_size: 1000                 # Don't test clusters with more than this many introns
+    leafcutter_min_samples_per_intron: 1              # Ignore introns used in fewer than this many samples
+    leafcutter_min_samples_per_group: 1               # Require this many samples in each group to have at least min_coverage reads
+    leafcutter_min_coverage: 10                       # Require min_samples_per_group samples in each group to have at least this many reads
+
+    # =============== 2.1.5 Leafviz =============
+    # If True, a RData file is produced, which can be used for the Leafviz tool (for visualization of the results)
+    produce_leafviz_RData_file: True            # Either True or False
+
+  # =============== 2.2 DexSeq general settings =============
+  dexseq_settings:
+
+  # ATTENTION: This tool requires GTF-files in the Ensembl format!
+  # Links:
+  # GRCh37: http://ftp.ensembl.org/pub/grch37/current/gtf/homo_sapiens/Homo_sapiens.GRCh37.87.gtf.gz
+  # GRCh38: http://ftp.ensembl.org/pub/current_gtf/homo_sapiens/Homo_sapiens.GRCh38.107.gtf.gz
+
+    # In case, where alignment files (BAM/SAM) have been created with an annotation file different from Ensembl,
+    # the annotation file needs to be converted to the Ensembl format (transforming chr1 -> 1).
+    require_gtf_chromosome_name_conversion:
+      True
+      # False
+
+    ensemble_sourced_gtf_file:
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ensembl_sourced/Homo_sapiens.GRCh37.87.gtf"
+      # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/ensembl_hg19/Homo_sapiens.GRCh37.87.gtf"
+
+    # CSV file, which contains a mapping from Ensembl gene IDs to gene names
+    ensembl_gene_id_to_gene_name_mapping_file:
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/final_masterthesis/final_github_version/SnakeSplice/input_data/ensembl_data/ensembl_gene_id_to_gene_name_mappings.csv"
+
+    # Additional to workflow report: Specify settings for the DEXSeq analysis summary report (which includes graphical plots)
+    summary_report:
+      # Produce a summary report for each condition
+      produce_summary_report: True        # Either True or False
+
+      false_discovery_rate:
+        0.05          # Default: 0.05, otherwise a lot of data can be generated
+
+  # =============== 2.3 Irfinder general settings =============
+  irfinder_settings:
+    # Define whether the input BAM files are stranded or not
+    strandedness_of_input:
+      "yes"      # Either "yes" (for stranded data) or "no" (for unstranded data)
+
+    # =============== Irfinder general settings =============
+    # ATTENTION: This tool requires GTF-files and FASTA-files in the Ensembl format!
+    # Links for GTF-files:
+    # GRCh37: http://ftp.ensembl.org/pub/grch37/current/gtf/homo_sapiens/Homo_sapiens.GRCh37.87.gtf.gz
+    # GRCh38: http://ftp.ensembl.org/pub/current_gtf/homo_sapiens/Homo_sapiens.GRCh38.107.gtf.gz
+
+    ensemble_source_link:
+      # "ftp://ftp.ensembl.org/pub/grch37/current/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.dna.toplevel.fa.gz"
+      "https://ftp.ensembl.org/pub/grch37/current/gtf/homo_sapiens/Homo_sapiens.GRCh37.87.gtf.gz"
+      # "ftp://ftp.ensembl.org/pub/release-75/fasta/homo_sapiens/dna/"
+      # "ftp://ftp.ensembl.org/pub/release-75/gtf/homo_sapiens/Homo_sapiens.GRCh37.75.gtf.gz"
+
+    ensemble_sourced_gtf_file:
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ensembl_sourced/Homo_sapiens.GRCh37.87.gtf"
+      # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/ensembl_hg19/Homo_sapiens.GRCh37.87.gtf"
+
+    ensemble_sourced_fasta_file:
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/adaptor_sequences.fa"
+      # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/ensembl_hg19/Homo_sapiens.GRCh37.dna.toplevel.fa"
+
+
+  # =============== 2.4 Private Junction Detection =============
+  private_junction_detection_settings:
+
+    # =============== 2.4.1 Regtools settings to extract junctions from BAM files =============
+    regtools_junctions_anchor_length: 8
+    # Minimum/Maximum required intron length -> Intron size = junction.end - junction.start
+    regtools_junctions_minimum_intron_length: 50        # Default: 50
+    regtools_junctions_maximum_intron_length: 500000    # Default: 500000
+
+    # =============== 2.4.2 General settings =============
+    ensemble_sourced_gtf_file:
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ensembl_sourced/Homo_sapiens.GRCh37.87.gtf"
+    # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/ensembl_hg19/Homo_sapiens.GRCh37.87.gtf"
+
+
+  # =============== 2.5 Fraser: Differential splicing analysis =============
+  fraser_settings:
+    # Nothing to set here yet
+
+  # =============== 2.6 rMATS: Measuring and statistical analysis of splice metrics =============
+  rmats_settings:
+    # Reference genome annotation file in GTF format
+    reference_genome_annotation_file:
+      # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/annotation_files/hg19.ncbiRefSeq.gtf"
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ncbi_sourced/GRCh37_latest_genomic.gtf"
+
+    # Library type of BAM-files: fr-unstranded, fr-firststrand, fr-secondstrand
+    library_type:
+      "fr-unstranded"   # Default: fr-unstranded -> Choose this, if you don't know the library type or if you have a mixed library type
+    # Average length of reads in provided BAM-files
+    average_read_length:
+      110
+    # Whether reads of different length shall be considered
+    consider_variable_read_length:
+      True        # Either True or False
+    # Consider potential novel splice sites:
+    # --novelSS is an experimental feature that allows splicing events to be detected that involve an unannotated splice site.
+    consider_novel_splice_sites:
+      True        # Either True or False

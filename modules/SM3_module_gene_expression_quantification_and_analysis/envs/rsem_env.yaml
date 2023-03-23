@@ -1,0 +1,8 @@
+name: rsem_env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - rsem
+  - bowtie=1.3.1

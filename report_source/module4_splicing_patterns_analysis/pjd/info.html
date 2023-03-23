@@ -1,0 +1,40 @@
+<div class="output_documentation_box">
+
+    <h3>Output Documentation</h3>
+
+    <p>
+        Summary of the Private Junction Detection (PJD) analysis.
+        <br>
+        <b>Attention: </b>This summary displays only the top 250 detected private junctions,
+        sorted by the number of reads supporting the junction.
+    </p>
+    <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDiv"
+            aria-expanded="false" aria-controls="collapseDiv">
+        Show details
+    </button>
+
+    <div class="collapse" id="collapseDiv">
+        <h5 class="pt-5">Column descriptions:</h5>
+        <ol class="list-group pb-5">
+            <li class="list-group-item"><b>chrom</b>: The chromosome of interest.</li>
+            <li class="list-group-item"><b>exact_jct_start</b>: The start position for the assessed junction.</li>
+            <li class="list-group-item"><b>exact_jct_end</b>: The end position for the assessed junction.</li>
+            <li class="list-group-item"><b>strand</b>: The strand of the assessed junction.</li>
+            <li class="list-group-item"><b>add_info</b>: Additional info concerning the genomic region/gene of the assessed junction.</li>
+            <li class="list-group-item"><b>[sampleID]</b>: Raw count number of reads that support the assessed junction in the given sample.</li>
+            <li class="list-group-item"><b>total_sum</b>: The total sum of reads that are supporting this junction.</li>
+            <li class="list-group-item"><b>max_contrast</b>: Predefined cutoff, which signifies how many reads/which percentage of reads would be allowed in the contrast group.</li>
+        </ol>
+
+        <h5>Method:</h5>
+        <p>
+            <a href="https://kuechlero.github.io/homepage/">Private Junction Detection</a>: The
+            Private Junction Detection is a simple tool developed by
+            <a href="https://kuechlero.github.io/homepage/">Oliver Kuechler</a> to detect splicing
+            junctions that only occur (or specifically do not occur) in a single sample (or group of samples).
+            The tool is based on the
+            <a href="https://regtools.readthedocs.io/en/latest/">Regtools</a>.
+        </p>
+    </div>
+
+</div>

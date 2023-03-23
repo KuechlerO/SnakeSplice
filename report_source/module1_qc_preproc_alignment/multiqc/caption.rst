@@ -1,0 +1,3 @@
+`MultiQC <https://multiqc.info/>`_ is a tool to aggregate bioinformatics results across many samples into a single report.
+It is written in Python and contains modules for a large number of common bioinformatics tools, including ``fastqc`` and ``trim_galore``.
+It also has a number of useful features, including the ability to generate a summary table of all the samples in the report, and the ability to generate a single HTML file that can be shared with collaborators.

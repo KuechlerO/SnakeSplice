@@ -1,0 +1,14 @@
+name: outrider_env
+
+channels:
+  - bioconda
+  - conda-forge
+
+dependencies:
+  - bioconductor-outrider
+  - r-annotables
+  - r-data.table
+  - r-ggplot2
+  - r-ggpubr
+  - r-plotly
+  - pandoc

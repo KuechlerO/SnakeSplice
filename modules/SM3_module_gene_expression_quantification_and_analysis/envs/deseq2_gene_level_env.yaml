@@ -1,0 +1,30 @@
+name: deseq2_gene_level_env
+channels:
+  - conda-forge # Place conda-forge first to avoid conflicts
+  - bioconda
+  - defaults
+dependencies:
+  - r-base
+  - r-yaml>=2.1.14
+  - r-biocmanager
+  - r-knitr
+  - bioconductor-reportingtools
+  - bioconductor-biocparallel
+  - bioconductor-tximeta
+  - bioconductor-tximport
+  - bioconductor-summarizedexperiment
+  - r-magrittr
+  - bioconductor-deseq2
+  - bioconductor-vsn
+  - r-pheatmap
+  - r-rcolorbrewer
+  - r-poiclaclu
+  - r-glmpca
+  - r-ggplot2
+  - bioconductor-rhdf5
+  - bioconductor-apeglm
+  - bioconductor-genefilter
+  - bioconductor-annotationdbi
+  - bioconductor-org.hs.eg.db
+  - bioconductor-impute
+  - r-ashr

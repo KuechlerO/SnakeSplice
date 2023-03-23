@@ -1,0 +1,146 @@
+# This workflow runs the module "Splicing Patterns Analysis"
+
+import os
+
+# ============== 0: Configuration settings ==============
+
+# ----------- 0.1: Sample annotations: Made portable by using PEP -----------
+pepfile: "./pep/pep_config.yaml"
+pepschema: "./../../pep/pep_schema_config.yaml"
+
+# ----------- 0.2: Config file -----------
+configfile: "./config_files/config_module5_splicing_patterns_analysis.yaml"
+
+# ============== 1: Imports ==============
+# --------------- 1.0: Import helper functions ----------------
+include:    "./../../scripts/main_helper_functions.smk"
+
+# -------------- 1.1: Load rules ----------------
+include:    "rules/leafcutter.smk"
+include:    "rules/dexseq.smk"
+include:    "rules/irfinder.smk"
+include:    "rules/private_junction_detection.smk"
+include:    "rules/fraser.smk"
+include:    "rules/rmats.smk"
+include:    "rules/splicing_summary.smk"
+
+# -------------- 1.2: Set rule-wide variables ----------------
+all_conditions = pep.sample_table[(pep.sample_table["control"] != "true")]["condition"].unique()
+
+# ============== 2: Output depending on user choices in config-file ==============
+# ------------ 2.1. Check if chosen submodules are compatible ----------------
+# Empty
+
+# ------------ 2.2. Collect conditional output-files ----------------
+conditional_output_files = []
+# Leafcutter Analysis
+if config["switch_variables"]["run_leafcutter_analysis"]:
+    leafcutter_output_path =os.path.join("output", config["output_directories"]["leafcutter_output_dir"])
+
+    # --------- 1. Leafcutter differential splicing analysis ---------
+    conditional_output_files += expand(os.path.join(leafcutter_output_path, config["leafcutter_settings"]["leafcutter_project_output_dir"],
+            "diff_splicing_analysis/{condition}/sample_analysis_cluster_significance.txt"),
+                                       condition=all_conditions)
+    # HTML reports for Leafcutter differential splicing analysis
+    conditional_output_files += expand(os.path.join(leafcutter_output_path, "html_reports", "leafcutter_splicing_analysis",
+        "{condition}", "sample_analysis_cluster_significance_extracted_significant_p010.tsv.report.html"),
+                                       condition=all_conditions)
+
+    # ----------- 2. LeafcutterMD outlier analysis -----------
+    conditional_output_files.append(rules.leafcutterMD_output_analysis.output)
+
+    # HTML reports for LeafcutterMD outlier analysis
+    conditional_output_files += rules.leafcutter_create_html_reports_for_leafcutterMD.output
+
+    # ----------- 3. Leafviz output -----------
+    if config["leafcutter_settings"]["produce_leafviz_RData_file"]:
+        conditional_output_files += expand(os.path.join(leafcutter_output_path,
+                config["leafcutter_settings"]["leafcutter_project_output_dir"],
+                "diff_splicing_analysis/{condition}/leafviz_obj.RData"),
+            condition=all_conditions)
+
+# DexSeq Analysis
+if config["switch_variables"]["run_dexseq_analysis"]:
+    dexseq_output_path = os.path.join('output', config["output_directories"]["dexseq_output_dir"])
+    # Summary results
+    conditional_output_files += expand(os.path.join(dexseq_output_path,
+                                       "dexseq_analysis_results/{condition}/result_summary.csv"),
+                                            condition=all_conditions)
+    # Filtered results
+    conditional_output_files += expand(os.path.join(dexseq_output_path,
+                                        "dexseq_analysis_results/{condition}/significant_and_named_result_summary.csv"),
+                                            condition=all_conditions)
+    # DexSeq's provided HTML report -> includes plots, but not really needed...
+    if config["dexseq_settings"]["summary_report"]["produce_summary_report"]:
+        conditional_output_files.append(rules.dexseq_create_html_summary_reports_with_dexseq_function.output)
+
+    # HTML report for snakemake workflow overview report
+    conditional_output_files += expand(os.path.join(dexseq_output_path,
+        "html_reports", "{condition}", "significant_and_named_result_summary.csv.report.html"),
+        condition=all_conditions)
+
+# FRASER
+if config["switch_variables"]["run_fraser_analysis"]:
+    fraser_output_path = os.path.join("output", config["output_directories"]["fraser_output_dir"])
+
+    # FRASER differential splicing analysis
+    conditional_output_files.append(rules.fraser_exploration_and_creation_of_fraser_dataset_object.output)
+    conditional_output_files.append(rules.fraser_create_fraser_analysis_plots.output)
+
+    # HTML report
+    conditional_output_files.append(rules.fraser_create_html_reports.output)
+
+
+# IRFinder
+if config["switch_variables"]["run_irfinder_analysis"]:
+    irfinder_output_path = os.path.join('output', config["output_directories"]["irfinder_output_dir"])
+    conditional_output_files += expand(os.path.join(irfinder_output_path, "{condition}/glm_analysis_results.csv"),
+                                       condition=all_conditions)
+
+# Private Junction Detection
+if config["switch_variables"]["run_private_junction_detection"]:
+    # Output directory for tool
+    pjd_output_path = os.path.join('output', config["output_directories"]["private_junction_detection_output_dir"])
+
+    # Final output files (unfiltered)
+    conditional_output_files += expand(os.path.join(pjd_output_path,
+        "{condition}/filtered_junctions_0/only_condition_junctions.junc"), condition=all_conditions)
+    conditional_output_files += expand(os.path.join(pjd_output_path,
+        "{condition}/filtered_junctions_1/only_condition_junctions.junc"), condition=all_conditions)
+
+    # HTML reports
+    conditional_output_files += expand(os.path.join(pjd_output_path, "html_reports", "{condition}",
+        "only_control-junctions-000.junc.report.html"), condition=all_conditions)
+    conditional_output_files += expand(os.path.join(pjd_output_path, "html_reports", "{condition}",
+        "only_condition-junctions-000.junc.report.html"), condition=all_conditions)
+
+
+# rMATS
+if config["switch_variables"]["run_rmats"]:
+    # Output directory for tool
+    rmats_output_path = os.path.join('output', config["output_directories"]["rmats_output_dir"])
+
+    # HTML report
+    conditional_output_files += expand(os.path.join(rmats_output_path, "{condition}", "html_reports",
+        "summary.txt.report.html"), condition=all_conditions)
+
+
+# Summary file
+if config["switch_variables"]["run_overall_summary"]:
+    # Output directory for tool
+    summary_output_path = os.path.join('output', config["output_directories"]["summary_output_dir"])
+
+    # Summary files
+    conditional_output_files += expand(os.path.join(summary_output_path,"{condition}",
+        "splicing_tools_summary_table.tsv"), condition=all_conditions)
+    # HTML reports
+    conditional_output_files += expand(os.path.join(summary_output_path, "html_reports", "{condition}",
+        "splicing_tools_summary_table.tsv.report.html"), condition=all_conditions)
+
+
+# ======== Main rule ===========
+rule complete_output:
+    input:
+        conditional_output_files
+
+

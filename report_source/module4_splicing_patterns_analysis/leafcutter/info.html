@@ -1,0 +1,39 @@
+<div class="output_documentation_box">
+
+    <h3>Output Documentation</h3>
+
+    <p>
+        Summary of Leafcutter's results concerning detection of differential splicing events in transcriptome profiles.
+        <br>
+        <b>Attention: </b>Note, that only differential splicing, but not novel splice events (e.g. novel exons, or
+        skipped exons) are detected by Leafcutter.
+        <br>
+        <b>Attention: </b>Only significant events (adjusted p-value < 0.10) are displayed.
+    </p>
+    <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDiv"
+            aria-expanded="false" aria-controls="collapseDiv">
+        Show details
+    </button>
+
+    <div class="collapse" id="collapseDiv">
+        <h5 class="pt-5">Column descriptions:</h5>
+        <ol class="list-group pb-5">
+            <li class="list-group-item"><b>cluster</b>: The Leafcutter-cluster ID.</li>
+            <li class="list-group-item"><b>Status</b>: Whether this cluster was a) successfully tested b) not tested for some reason (e.g. too many introns) c) there was an error during testing - this should be rare.</li>
+            <li class="list-group-item"><b>loglr</b>: Log likelihood ratio between the null model (no difference between the groups) and alternative (there is a difference).</li>
+            <li class="list-group-item"><b>df</b>: Degrees of freedom, equal to the number of introns in the cluster minus one (assuming two groups).</li>
+            <li class="list-group-item"><b>p</b>: The resulting (unadjusted!) p-value under the asymptotic Chi-squared distribution. We just use p.adjust( ..., method="fdr") in R to control FDR based on these.</li>
+            <li class="list-group-item"><b>adj_p</b>: The adjusted p-value. We just use p.adjust( ..., method="fdr") in R to control FDR based on these.[sic, Leafcutter]</li>
+            <li class="list-group-item"><b>genes</b>: List of genes that are overlapping with the cluster's covered genomic region.</li>
+        </ol>
+
+        <h5>Method:</h5>
+        <p>
+            <a href="https://davidaknowles.github.io/leafcutter/">Leafcutter</a> quantifies RNA splicing variation
+            using short-read RNA-seq data.
+            The core idea is to leverage spliced reads (reads that span an intron) to quantify (differential)
+            intron usage across samples.
+        </p>
+    </div>
+
+</div>

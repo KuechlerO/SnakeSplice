@@ -1,0 +1,6 @@
+name: pjd_annotate_genes_env
+channels:
+  - bioconda
+dependencies:
+  - bioconductor-annotationdbi
+  - bioconductor-org.hs.eg.db

@@ -1,0 +1,157 @@
+# ---- This Workflow performs Quality-Checks, Preprocessing and Alignment of given RNA-seq reads ----
+import os
+
+# ============== 0: Configuration settings ==============
+
+# ----------- 0.1: Sample annotations: Made portable by using PEP -----------
+pepfile: "./pep/pep_config.yaml"
+pepschema: "./../../pep/pep_schema_config.yaml"
+
+# ----------- 0.2: Config file -----------
+configfile: "./config_files/config_module1_qc_preproc_alignment.yaml"
+
+
+# ============== 1: Imports ==============
+
+# --------------- 1.0: Import helper functions ----------------
+include:    "./../../scripts/main_helper_functions.smk"
+include: "rules/lib_get_read_file_paths.smk"        # main_helper_get_bam_file_for_sample
+
+# -------------- 1.1: Load rules ----------------
+include:	"rules/check_strandedness.smk"
+include:    "rules/trimmomatic.smk"
+include:    "rules/kraken2.smk"
+include:    "rules/fastqc.smk"
+include:    "rules/star_aligner.smk"
+include:    "rules/olego_aligner.smk"
+include:    "rules/bamstats.smk"
+include:    "rules/qualimap.smk"
+include:    "rules/deeptools.smk"
+include:    "rules/alfa.smk"
+include:    "rules/multiqc.smk"
+
+# ============== 2: Output depending on user choices in config-file ==============
+
+# ------------ 2.1. Check if chosen submodules are compatible ----------------
+if config["switch_variables"]["run_fastqc_after_trimming"] and not config["switch_variables"]["run_trimmomatic"]:
+    raise Exception("You have chosen to run FastQC after trimming, but have not chosen to run Trimmomatic. "
+                    "This is not possible. Please choose to run Trimmomatic or not to run FastQC after trimming. "
+                    "Adjust your config-file for this submodule accordingly.")
+if config["switch_variables"]["run_qualimap"] and not (config["switch_variables"]["run_alignment"]["use_star"]
+                                                       or config["switch_variables"]["run_alignment"]["use_olego"]):
+    raise Exception("You have chosen to run Qualimap, but have not chosen to run alignment. "
+                    "Please adjust your config-file for this submodule accordingly.")
+if (config["switch_variables"]["run_alignment"]["use_star"] or config["switch_variables"]["run_alignment"]["use_olego"]) \
+        and not config["switch_variables"]["run_trimmomatic"]:
+    raise Exception("In order to run alignment, you need to run Trimmomatic. "
+                    "Please set 'run_trimmomatic' in submodule's config-file to True.")
+
+# ------------ 2.2. Collect output-files ----------------
+output_files = []
+
+# check for strandedness
+if config["switch_variables"]["run_check_of_strandedness"]:
+    output_files.append(rules.check_strandedness_summarize_strandedness_check.output)      # Summary report of all samples
+    output_files.append(rules.check_strandedness_clean_up.output)       # Clean up
+
+    # HTML report
+    output_files.append(rules.check_strandedness_create_report.output)  # HTML report
+
+# Trimmomatic: Quality Trimming of reads
+if config["switch_variables"]["run_trimmomatic"]:
+    trim_output_path = os.path.join('output',config["output_directories"]["trimmomatic_output_dir"])
+    trimmed_r1_files = expand(os.path.join(trim_output_path, "{sample_id}_R1.fastq.gz"), sample_id=pep.sample_table["sample_name"])
+    trimmed_r2_files = expand(os.path.join(trim_output_path, "{sample_id}_R2.fastq.gz"), sample_id=pep.sample_table["sample_name"])
+    output_files += trimmed_r1_files + trimmed_r2_files
+
+# Kraken2: Check for potential contaminants
+if config["switch_variables"]["run_kraken2"]:
+    kraken_output_path = os.path.join('output',config["output_directories"]["kraken2_output_dir"])
+    output_files += expand(os.path.join(kraken_output_path, "{sample_id}_report_summary.report"), sample_id=pep.sample_table["sample_name"])
+
+# FastQC: Check quality of reads - Before
+if config["switch_variables"]["run_fastqc_before_trimming"]:
+    fastqc_output_path = os.path.join('output',config["output_directories"]["fastqc_output_dir"])
+    output_files += expand(os.path.join(fastqc_output_path, "non_trimmed/{sample_id}.html"), sample_id=pep.sample_table["read1"])
+    output_files += expand(os.path.join(fastqc_output_path, "non_trimmed/{sample_id}.html"),sample_id=pep.sample_table["read2"])
+# FastQC: Check quality of reads - After
+if config["switch_variables"]["run_fastqc_after_trimming"]:
+    fastqc_output_path = os.path.join('output',config["output_directories"]["fastqc_output_dir"])
+    output_files += expand(os.path.join(fastqc_output_path, "trimmed/{sample_id}_R1.html"), sample_id=pep.sample_table["sample_name"])
+    output_files += expand(os.path.join(fastqc_output_path, "trimmed/{sample_id}_R2.html"), sample_id=pep.sample_table["sample_name"])
+
+# Alignment: Align reads to reference genome
+## Star
+if config["switch_variables"]["run_alignment"]["use_star"]:
+    star_output_path = os.path.join('output',config["output_directories"]["star_output_dir"])
+    output_files += expand(os.path.join(star_output_path, "{sample_id}/{sample_id}.sorted.bam.bai"), sample_id=pep.sample_table["sample_name"])
+## Olego
+if config["switch_variables"]["run_alignment"]["use_olego"]:
+    olego_output_path = os.path.join('output',config["output_directories"]["olego_output_dir"])
+    output_files += expand(os.path.join(olego_output_path, "{sample_id}/{sample_id}.sorted.bam.bai"), sample_id=pep.sample_table["sample_name"])
+
+## BamStats
+if config["switch_variables"]["run_bamstats"]:
+    bamstats_output_path = os.path.join('output', config["output_directories"]["bamstats_output_dir"])
+
+    aligner_array = []
+    if config["switch_variables"]["run_alignment"]["use_star"]:
+        aligner_array.append("star")
+    if config["switch_variables"]["run_alignment"]["use_olego"]:
+        aligner_array.append("olego")
+    if len(aligner_array) > 0:
+        # Output
+        output_files += expand(os.path.join(bamstats_output_path, "{aligner_tool}", "merged_bamstats.tsv"),
+                                aligner_tool=aligner_array)
+        # HTML report
+        output_files += expand(os.path.join(bamstats_output_path, "{aligner_tool}", "html_reports",
+            "merged_bamstats.tsv.report.html"), aligner_tool=aligner_array)
+
+# QualiMap: Check quality of alignment results
+if config["switch_variables"]["run_qualimap"]:
+    qualimap_output_path = os.path.join('output',config["output_directories"]["qualimap_output_dir"])
+    # Include STAR alignment results
+    if config["switch_variables"]["run_alignment"] and config["switch_variables"]["run_alignment"]["use_star"]:
+        output_files += expand(os.path.join(qualimap_output_path, "star/{sample_id}/qualimapReport.html"),
+                               sample_id=pep.sample_table["sample_name"])
+    # Include Olego alignment results
+    if config["switch_variables"]["run_alignment"] and config["switch_variables"]["run_alignment"]["use_olego"]:
+        output_files += expand(os.path.join(qualimap_output_path, "olego/{sample_id}/qualimapReport.html"),
+                               sample_id=pep.sample_table["sample_name"])
+
+# DeepTools: MultiBamSummary & PCA
+if config["switch_variables"]["run_deeptools"]:
+    output_files += rules.deeptools_plotPCA.output
+
+
+# ALFA: Checks feature distribution in alignment results
+if config["switch_variables"]["run_alfa"]:
+    alfa_output_path = os.path.join('output',config["output_directories"]["alfa_output_dir"])
+
+    # Check which input is to use
+    if config["switch_variables"]["run_alignment"] and config["switch_variables"]["run_alignment"]["use_star"]:
+        chosen_aligner = config["output_directories"]["star_output_dir"]
+    elif config["switch_variables"]["run_alignment"] and config["switch_variables"]["run_alignment"]["use_olego"]:
+        chosen_aligner = config["output_directories"]["olego_output_dir"]
+    else:
+        raise Exception("You have chosen to run ALFA, but have not chosen to run alignment. "
+                        "Please adjust your config-file for this submodule accordingly.")
+
+    output_dir = os.path.join(alfa_output_path, "{aligner}".format(aligner=chosen_aligner))
+    # 1. Analysis for single BAM files -> include for category analysis
+    output_files += expand(os.path.join(output_dir, "{sample_id}/{sample_id}.ALFA_feature_counts.tsv"),
+                           sample_id=pep.sample_table["sample_name"])
+    # 2. Summary analysis for all BAM files
+    output_files += expand(os.path.join(output_dir, "summary/{sample_id}.ALFA_feature_counts.tsv"),
+                           sample_id=pep.sample_table["sample_name"])
+
+# MultiQC: Summarize output of all QC-steps
+if config["switch_variables"]["run_multiqc"]:
+    multiqc_output_path = os.path.join('output',config["output_directories"]["multiqc_output_dir"])
+    output_files.append(rules.run_multiqc.output)
+
+
+# ======== Main rule ===========
+rule complete_output:
+    input:
+        output_files

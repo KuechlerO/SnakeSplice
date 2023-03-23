@@ -1,0 +1,5 @@
+sample_name,sample_directory,read1,read2,control,condition,protocol,stranded,adaptors_file,additional_comment
+test1,local_test_dir,test1_R1.fastq,test1_R2.fastq,true,None,RNAseq-PolyA,no,standard_adaptors_local,None
+test1b,local_test_dir,test1b_R1.fastq,test1b_R2.fastq,true,None,RNAseq-PolyA,no,standard_adaptors_local,None
+test2,local_test_dir,test2_R1.fq,test2_R2.fq,false,BUD13_Variant,RNAseq-PolyA,yes,standard_adaptors_local,None
+test2b,local_test_dir,test2b_R1.fq,test2b_R2.fq,false,BUD13_Variant,RNAseq-PolyA,yes,standard_adaptors_local,None

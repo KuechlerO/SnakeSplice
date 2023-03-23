@@ -1,0 +1,5 @@
+name: leafviz_env
+channels:
+  - conda-forge
+dependencies:
+  - unzip

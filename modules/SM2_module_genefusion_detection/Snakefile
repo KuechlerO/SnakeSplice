@@ -1,0 +1,46 @@
+# This workflow conducts an "Alternative Splicing Analysis" via LeafCutter
+# Additionally Arriba is run in order to assess chimeric reads
+
+import os
+
+# ============== 0: Configuration settings ==============
+# ----------- 0.1: Sample annotations: Made portable by using PEP -----------
+pepfile: "./pep/pep_config.yaml"
+pepschema: "./../../pep/pep_schema_config.yaml"
+
+# ----------- 0.2: Config file -----------
+configfile: "./config_files/config_module2_gene_fusion.yaml"
+
+
+# ============== 1: Imports ==============
+# --------------- 1.0: Import helper functions ----------------
+include:    "./../../scripts/main_helper_functions.smk"
+
+# -------------- 1.1: Load rules ----------------
+include:	"rules/arriba.smk"
+
+
+# ============== 2: Output depending on user choices in config-file ==============
+# ------------ 2.1. Check if chosen submodules are compatible ----------------
+# Nothing...
+
+# ------------ 2.2. Collect output-files ----------------
+conditional_output_files = []
+
+# Arriba
+if config["switch_variables"]["run_fusion_detection_with_arriba"]:
+    arriba_output_path = os.path.join("output", config["output_directories"]["arriba_output_dir"])
+
+    # Arriba results
+    conditional_output_files += expand(os.path.join(arriba_output_path, "{sample_id}.fusions.tsv"),
+               sample_id=pep.sample_table["sample_name"])
+
+    # HTML report
+    conditional_output_files.append(os.path.join(arriba_output_path,
+        "html_reports", "arriba_gene_fusions_summary.tsv.report.html"))
+
+
+# ======== Main rule ===========
+rule complete_output:
+    input:
+        conditional_output_files

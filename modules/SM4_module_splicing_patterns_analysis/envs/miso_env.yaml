@@ -1,0 +1,13 @@
+name: miso_env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - misopy
+  - numpy >1.5
+  - scipy
+  - pysam
+  - matplotlib
+  - samtools
+  - bedtools

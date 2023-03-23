@@ -1,0 +1,162 @@
+# This workflow runs the module "Detection and Quantification of Transcripts"
+
+import os
+
+
+# ============== 0: Configuration settings ==============
+
+# ----------- 0.1: Sample annotations: Made portable by using PEP -----------
+pepfile: "./pep/pep_config.yaml"
+pepschema: "./../../pep/pep_schema_config.yaml"
+
+# ----------- 0.2: Config file -----------
+configfile: "./config_files/config_module4_gene_expression_quantification_and_analysis_settings.yaml"
+
+# ============== 1: Imports ==============
+# --------------- 1.0: Import helper functions ----------------
+include:    "./../../scripts/main_helper_functions.smk"
+
+# -------------- 1.1: Load rules ----------------
+include:	"rules/cufflinks.smk"
+include:    "rules/cummerbund.smk"
+include:    "rules/outrider.smk"
+include:    "rules/salmon.smk"
+include:    "rules/kallisto.smk"
+# include:    "rules/rsem.smk"
+include:    "rules/clusterProfiler_gsea.smk"
+include:    "rules/deseq2_exploration.smk"
+include:    "rules/deseq2_deg_analysis.smk"
+
+
+# ============== 2: Output depending on user choices in config-file ==============
+# ------------ 2.1. Check if chosen submodules are compatible ----------------
+if config["switch_variables"]["run_cummerbund_analysis"] and not config["switch_variables"]["run_cufflinks_analysis"]:
+    raise RuntimeError("Cummerbund analysis is chosen but cufflinks analysis is not chosen. "
+                       "However, cummerbund requires cufflinks output. If you have already precomputed"
+                       "the cufflinks output, then place it in the proper directory and the cummerbund"
+                       "analysis will be run based on that input.")
+
+# ------------ 2.2. Collect conditional output-files ----------------
+conditional_output_files = []
+# All annotated all_conditions
+all_conditions = pep.sample_table[(pep.sample_table["condition"] != "None")
+                                  & (pep.sample_table["condition"] != "")]["condition"].unique()
+
+# Cufflinks
+if config["switch_variables"]["run_cufflinks_analysis"]:
+    cufflinks_output_path = os.path.join('output',config["output_directories"]["cufflinks_output_dir"])
+    # Expression test files
+    conditional_output_files += expand(os.path.join(cufflinks_output_path, "{condition}",'{level}_exp.diff'),
+        condition=all_conditions, level=["isoform", "gene", "cds", "tss_groups"]),
+
+    # HTML report
+    conditional_output_files += expand(os.path.join(cufflinks_output_path, "html_reports", "{condition}",
+        '{level}_exp.diff.report.html'), condition=all_conditions, level=["isoform", "gene", "cds", "tss_groups"]),
+
+# Cummerbund
+if config["switch_variables"]["run_cummerbund_analysis"]:
+    cummerbund_output_path = os.path.join('output',config["output_directories"]["cummerbund_output_dir"])
+
+    conditional_output_files += expand(os.path.join(cummerbund_output_path, "{condition}",
+        "analysis_output.txt"), condition=all_conditions),
+
+    # TODO: check whether to integrate reports in overview report!
+
+# Outrider
+if config["switch_variables"]["run_outrider_analysis"]:
+    outrider_output_path = os.path.join('output',config["output_directories"]["outrider_output_dir"])
+    # Outrider output files
+    conditional_output_files.append(rules.outrider_explore_analysis_results.output)
+
+    # HTML report files
+    conditional_output_files.append(rules.outrider_create_html_reports.output)
+
+# Salmon
+if config["switch_variables"]["run_salmon_analysis"]:
+    salmon_output_path = os.path.join('output', config["output_directories"]["salmon_output_dir"])
+
+    # 1. Deseq dataset exploration
+    conditional_output_files += expand(os.path.join(salmon_output_path, "{condition}",
+            "explore_deseq_dataset_obj", "{plot_file}"),
+        condition=all_conditions,
+        plot_file=["sampleEuclidianDistMatrix.jpg", "samplePoissonDistMatrix.jpg",
+            "PCA_rlog_transformed.jpg", "PCA_glmPCA.jpg"]),
+
+    # 2. Gene level analysis -> included in overview report
+    conditional_output_files += expand(os.path.join(salmon_output_path, "{condition}", "deseq2_gene_level_analysis",
+        "deseq2_results.csv"), condition=all_conditions)
+
+    # HTML report - DEG
+    conditional_output_files += expand(os.path.join(salmon_output_path,"{condition}", "html_reports",
+        "deseq2_results_significant.csv.report.html"), condition=all_conditions),
+
+    # 3. Gene Set Enrichment Analysis
+    if config["salmon_settings"]["run_gse_analysis"]:
+        # Gene Set Enrichment Analysis
+        conditional_output_files += expand(os.path.join(salmon_output_path,"{condition}","gsea_analysis",
+            "gsea_{annotation_source}_summary.csv"),
+            condition=all_conditions, annotation_source=["go", "kegg", "wp"])
+
+        # HTML reports
+        conditional_output_files += expand(os.path.join(salmon_output_path, "{condition}", "gsea_analysis",
+            "html_reports", "gsea_{annotation_source}_summary.csv.report.html"),
+            condition=all_conditions,annotation_source=["go", "kegg", "wp"])
+
+# Kallisto
+if config["switch_variables"]["run_kallisto_analysis"]:
+    kallisto_output_path = os.path.join('output', config["output_directories"]["kallisto_output_dir"])
+
+    # 1. Deseq dataset exploration
+    conditional_output_files += expand(os.path.join(kallisto_output_path,"{condition}",
+        "explore_deseq_dataset_obj","PCA_glmPCA.jpg"), condition=all_conditions)
+
+    # 2. Gene level analysis -> included in overview report
+    conditional_output_files += expand(os.path.join(kallisto_output_path, "{condition}", "deseq2_gene_level_analysis",
+        "deseq2_results.csv"), condition=all_conditions)
+
+    # HTML report
+    conditional_output_files += expand(os.path.join(kallisto_output_path,"{condition}","html_reports",
+        "deseq2_results_significant.csv.report.html"), condition=all_conditions),
+
+    # 3. Gene Set Enrichment Analysis
+    if config["kallisto_settings"]["run_gse_analysis"]:
+        # Gene Set Enrichment Analysis
+        conditional_output_files += expand(os.path.join(kallisto_output_path,"{condition}","gsea_analysis",
+            "gsea_{annotation_source}_summary.csv"),
+            condition=all_conditions, annotation_source=["go", "kegg", "wp"])
+
+        # HTML reports
+        conditional_output_files += expand(os.path.join(kallisto_output_path,"{condition}","gsea_analysis",
+            "html_reports","gsea_{annotation_source}_summary.csv.report.html"),
+            condition=all_conditions, annotation_source=["go", "kegg", "wp"])
+
+# # RSEM
+# if config["switch_variables"]["run_rsem_analysis"]:
+#     rsem_output_path = os.path.join('output', config["output_directories"]["rsem_output_dir"])
+#
+#     # Total RSEM quantification results
+#     # Create for 1. genes & 2. isoforms
+#     conditional_output_files += expand(os.path.join(rsem_output_path, "quantification",
+#         "{genes_or_isoforms}_total_expression_matrix.tsv"),
+#         genes_or_isoforms=["genes", "isoforms"])
+#
+#     # Deseq dataset exploration
+#     conditional_output_files += expand(os.path.join(rsem_output_path, "{condition}",
+#         "explore_deseq_dataset_obj","PCA_glmPCA.jpg"), condition=all_conditions)
+#
+#     # Gene level analysis -> included in overview report
+#     conditional_output_files += expand(os.path.join(rsem_output_path, "{condition}", "deseq2_gene_level_analysis",
+#         "deseq2_results.csv"), condition=all_conditions)
+#
+#     # HTML report
+#     conditional_output_files += expand(os.path.join(rsem_output_path,"{condition}","html_reports",
+#         "deseq2_results_significant.csv.report.html"),condition=all_conditions),
+
+
+
+# ======== Main rule ===========
+rule complete_output:
+    input:
+        conditional_output_files
+
+

@@ -1,0 +1,33 @@
+# Profile config.yaml for local execution
+
+# Inspired by:
+# https://www.sichong.site/2020/02/25/snakemake-and-slurm-how-to-manage-workflow-with-resource-constraint-on-hpc/
+
+# How to use:
+# snakemake --profile profile_cluster
+# -> This will search current dir as well as ~/.config/snakemake/ for "profile_cluster/config.yaml"
+
+# -*------- Go to bottom to see final cluster command -*---------
+
+
+# ============ Settings =============== #
+# Rerun tasks depending only on last modification times (ignoring e.g. changed params)
+# This is set in place, due to error with checkpoints, which causes reruns all the time...
+rerun-triggers: mtime
+
+# Enable using conda wrappers
+use-conda: True
+# Go on with independent jobs, if a job fails
+keep-going: True
+# Wait given seconds if an output file of a job is not present after the job finished.
+latency-wait: 60
+# Rerun all jobs where the output is incomplete
+rerun-incomplete: True
+# Printout shell commands that will be executed
+printshellcmds: True
+# -> Set shadow: "minimal" for rules who leverage it
+# Rules use often "os.rename" -> causes error: https://stackoverflow.com/questions/42392600/oserror-errno-18-invalid-cross-device-link/43967659#43967659
+# shadow-prefix: "/sc-scratch/sc-scratch-btg"         # Does it work? -> Relative paths?
+
+# max nr of jobs
+jobs: 2

@@ -1,0 +1,185 @@
+# =============== Configuration file for module: QualityControl, Preprocessing, and Alignment =============
+# Use this config-file to switch on/off the features that you need for your personal research.
+# Furthermore, you can set the detailed parameters for the respective features.
+
+
+# =============== 1.) Primary settings =============
+
+# ------- 1.1 Module: Quality-Control, Preprocessing, and Alignment --------
+module1_qc_preprocessing_and_alignment_settings:
+  switch_variables:
+    # Switch variables to decide which features are to be included
+    run_check_of_strandedness: True      # Run python script to check strandedness of input read files
+    run_trimmomatic: True                 # Run trimmomatic: Quality trimming of input reads
+    run_kraken2: False                    # Run Kraken2: Check for potential contamination via Kraken2
+    run_fastqc_before_trimming: False      # Run fastqc: Quality control of input reads before trimming
+    run_fastqc_after_trimming: False       # Run fastqc: Quality control of input reads after trimming
+    run_alignment:
+      use_star: False                     # Run STAR alignment: Align reads to reference genome
+      use_olego: True                    # Run Olego alignment: Align reads to reference genome
+    run_bamstats: True                  # Run bamstats: Quality control of aligned reads
+    run_qualimap: False                   # Run Qualimap: Quality control of alignment results
+    run_deeptools: True                  # Run deeptools: Quality control of alignment results
+    run_alfa: False                       # Run Alfa: Provides a global overview of features distribution in given samples
+    run_multiqc: True                     # Run multiqc: Summarize all quality control results into one output-file
+
+
+  # =============== 1.2 Output directories =============
+  # The output directories for the respective tool-outputs are defined here.
+  # This is important for importing the outputs into the GUI
+  output_directories:
+    alfa_output_dir: "alfa"
+    bamstats_output_dir: "bamstats"
+    check_strandedness_output_dir: "check_strandedness"
+    fastqc_output_dir: "fastqc"
+    kraken2_output_dir: "kraken2"
+    multiqc_output_dir: "multiqc"
+    olego_output_dir: "olego"
+    qualimap_output_dir: "qualimap"
+    star_output_dir: "star"
+    trimmomatic_output_dir: "trimmomatic"
+    deeptools_output_dir: "deeptools"
+
+
+  # =============== 2. Required settings & input files for selected functionalities =============
+  # ATTENTION: Use absolute paths when defining input file paths!
+
+  # 2.1 Check of strandedness
+  check_strandedness_settings:
+    # Nothing
+
+  # 2.2 Trimming of reads
+  trimming_settings:
+    # Nothing
+
+  # 2.3 Kraken2: Check for potential contamination via Kraken2
+  contamination_check_settings:
+    # Kraken2 database, if empty, then miniKraken2-db will be downloaded
+    file_kraken2_db:
+      "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/Kraken2_dbs/minikraken2_v1_8GB_201904"
+
+  # 2.4 FastQC
+  fastqc_settings:
+    # Nothing
+
+  # 2.5 Alignments
+  alignment_settings:
+    # 2.5.1 STAR alignment: Align reads to reference genome
+    star_alignment_settings:
+      # Reference genome annotation file, that is to create the STAR index
+      reference_genome_annotation_file:
+        # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/annotation_files/hg19.ncbiRefSeq.gtf"
+        "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ncbi_sourced/GRCh37_latest_genomic.gtf"
+
+      # Reference genome fasta file, that is to create the STAR index
+      reference_genome_fasta_file:
+        # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/hg19_analysis_set/hg19.p13.plusMT.no_alt_analysis_set.fa"
+        "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ncbi_sourced/hg19.p13.plusMT.no_alt_analysis_set.fa"
+
+      index_build:
+        sjdbOverhang:
+          "99"              # recommended by leafcutter authors -> wrapper takes it
+        extra_settings:
+          ""                # additional flags for STAR index generation
+
+      alignment:
+        # Detailed settings for STAR alignment
+        # -outSAMstrandField intronMotif command is to add XS strand tags to spliced reads (removes the ones with unknown strand)
+        # twopassMode: "Basic"        ->  allows to detect more spliced reads mapping to novel junctions
+        # chimeric read alignments are included and marked!
+        # BAM is unsorted, but will be sorted later
+        extra_settings: >
+          --quantMode GeneCounts 
+          --outSAMstrandField intronMotif 
+          --outSAMtype BAM Unsorted 
+          --twopassMode Basic 
+          --chimSegmentMin 10 --chimOutType WithinBAM SoftClip 
+          --chimJunctionOverhangMin 10 --chimScoreMin 1 --chimScoreDropMax 30 
+          --chimScoreJunctionNonGTAG 0 --chimScoreSeparation 1 --alignSJstitchMismatchNmax 5 -1 5 5 
+          --chimSegmentReadGapMax 3
+
+        # extract splice junctions from this file and use them to greatly improve accuracy of the mapping
+        use_sjdb_file: True
+        
+
+    # 2.5.2 Olego alignment: Align reads to reference genome
+    olego_alignment_settings:
+      # If Olego is requested: Provide a path, where either
+      # 1.) a subdirectory "olego" is located, which contains the Olego executable and the Olego index
+      # 2.) no subdirectory "olego" is located, so that the workflow will install Olego and build the index
+      olego_installation_dir:
+        # "/sc-scratch/sc-scratch-btg/olik_splicing_project/splice-prediction/snakemake_workflows/Snakemake_Main/lib"
+        "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/lib"
+
+      # Reference genome sequence file, that is used to create the Olego index
+      reference_genome_fasta_file:
+        # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/hg19_analysis_set/hg19.p13.plusMT.no_alt_analysis_set.fa"
+        "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ncbi_sourced/hg19.p13.plusMT.no_alt_analysis_set.fa"
+
+      # If empty: Olego will be downloaded and installed automatically
+      # Regression model for Olego, if empty then default model will be used: olego/models/hg.cfg
+      olego_regression_model:
+        # "/sc-scratch/sc-scratch-btg/olik_splicing_project/splice-prediction/snakemake_workflows/Snakemake_Main/lib/olego/models/hg.cfg"     # Regression model for Olego
+        "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/lib/olego/models/hg.cfg"     # Regression model for Olego
+
+      olego_allowed_missmatches:      # Allowed nr of mismatches for aligning
+        4
+      olego_min_exon_size:            # Minimal length of exon (read-fragments)
+        6                             # leafcutter authors suggest: 6
+
+  # 2.6 DeepTools: Analysis of read coverage of genomic regions
+  deeptools_settings:
+    # Input directory of *INDEXED* bam files: Each bam file must have a corresponding .bai file
+    # ATTENTION: Use absolute paths when defining input file paths!
+    # ATTENTION: Required directory structure: '/path/to/input_dir/sample_1/sample_1.bam'
+    input_dir_of_bam_files:       # Input directory of *INDEXED* bam files
+      #  "star"                      # BAM files are expected to be located in the output directory of STAR alignment
+      "olego"                     # BAM files are expected to be located in the output directory of Olego alignment
+      # "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/output/module_qc_preproc_and_alignment/output/star"
+
+    bam_file_extension:           # Extension of bam files, e.g. for '.sorted.bam': '/path/to/input_dir/sample_1/sample_1.sorted.bam'
+      # ".bam"
+      ".sorted.bam"
+
+    min_map_quality:              # Minimal mapping quality of reads
+      30
+    region:           # Region of interest for read coverage analysis
+      # Can be empty, then the whole genome will be analyzed
+      # "chr1:1000000-2000000"      # Format: "chr1:1000000-2000000"
+
+
+  # 2.7 QualiMap: Quality assessment of alignment via qualimap
+  qualimap_settings:
+    qualimap_java_heap_size:        # Java heap size for qualimap
+      "131G"
+
+  # 2.8 ALFA: Annotation Landscape For Aligned reads -> Provides a global overview of features distribution in given samples
+  alfa_settings:
+    # ATTENTION: This tool requires GTF-files in the Ensembl format!
+    # Links:
+    # GRCh37: http://ftp.ensembl.org/pub/grch37/current/gtf/homo_sapiens/Homo_sapiens.GRCh37.87.gtf.gz
+    # GRCh38: http://ftp.ensembl.org/pub/current_gtf/homo_sapiens/Homo_sapiens.GRCh38.107.gtf.gz
+
+    # In case, where alignment files (BAM/SAM) have been created with an annotation file different from Ensembl,
+    # the annotation file needs to be converted to the Ensembl format (transforming chr1 -> 1).
+    require_gtf_chromosome_name_conversion:
+      True
+
+    ensemble_sourced_gtf_file:
+      # "../../../../pseudo_data/test_gtf.gtf"
+      # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/annotation_files/Homo_sapiens.GRCh37.87.gtf"
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ensembl_sourced/Homo_sapiens.GRCh37.87.gtf"
+
+    # In case, where no Ensembl GTF file has been used for alignments: chr1, chr2, ... are used as chromosome names
+    # However, the used Ensembl GTF file has just 1, 2, ... as chromosome names
+    # Thus conversion might be required
+    require_gtf_conversion:
+      True
+
+    # ALFA index files basename (needed for GTF indexing)
+    alfa_genome_index_name:
+      "alfa_genome_index_name"
+
+  # 2.9 MultiQC: Summarize all quality control results into one output-file
+  multiqc_settings:
+    # Nothing

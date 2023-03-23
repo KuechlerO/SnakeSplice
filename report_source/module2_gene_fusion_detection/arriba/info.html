@@ -1,0 +1,58 @@
+<div class="output_documentation_box">
+
+    <h3>Output Documentation</h3>
+
+    <p>
+        Summary of Arriba's results concerning detection of gene fusions in transcriptome profiles.
+        <br>
+        <b>Attention: </b>
+        This overview contains the results for all input samples (control & condition samples).
+    </p>
+    <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDiv"
+            aria-expanded="false" aria-controls="collapseDiv">
+        Show details
+    </button>
+
+    <div class="collapse" id="collapseDiv">
+        <h5 class="pt-5">Column descriptions:</h5>
+        <p>
+            For more information on the columns, please see the
+            <a href="https://arriba.readthedocs.io/en/latest/output-files/">Arriba documentation</a>.
+        </p>
+        <ol class="list-group pb-5">
+            <li class="list-group-item"><b>sample_id: </b>The analyzed sample.</li>
+            <li class="list-group-item"><b>gene1: </b>gene1 contains the gene which makes up the 5' end of the transcript</li>
+            <li class="list-group-item"><b>gene2: </b>gene2 contains the gene which makes up the 3' end of the transcript</li>
+            <li class="list-group-item"><b>strand1.gene.fusion/strand2.gene.fusion: </b>Two values seperated by a slash.
+                The strand before the slash reflects the strand of the gene according to the gene annotation supplied to Arriba.
+                The value after the slash reflects the strand that is transcribed.
+                Occassionally, the strand that is transcribed cannot be predicted reliably. In this case, Arriba indicates the lack of information as a dot (.).
+            </li>
+            <li class="list-group-item"><b>breakpoint1: </b>breakpoint1 contains the breakpoint of the 5' gene</li>
+            <li class="list-group-item"><b>breakpoint2: </b>breakpoint2 contains the breakpoint of the 3' gene</li>
+            <li class="list-group-item"><b>site1/site2: </b>These columns add information about the location of the breakpoints.</li>
+            <li class="list-group-item"><b>type: </b>Inferred type of the event.</li>
+            <li class="list-group-item"><b>direction1/direction2: </b>These columns indicate the orientation of the fusion.</li>
+            <li class="list-group-item"><b>split_reads1/split_reads2: </b>These columns contain the number of split reads that support the fusion.</li>
+            <li class="list-group-item"><b>discordant_mates: </b>Number of discordant mates that support the fusion.</li>
+            <li class="list-group-item"><b>coverage1/coverage2: </b>These two columns show the coverage near breakpoint1 and breakpoint2, respectively.</li>
+            <li class="list-group-item"><b>confidence: </b>Each prediction is assigned one of the confidences low, medium, or high.</li>
+            <li class="list-group-item"><b>closest_genomic_breakpoint1/closest_genomic_breakpoint2: </b>These two columns contain the coordinates of the genomic breakpoints which are closest to the transcriptomic breakpoints given in the columns breakpoint1 and breakpoint2.</li>
+            <li class="list-group-item"><b>filters: </b>This column lists the filters which removed one or more of the supporting reads.</li>
+            <li class="list-group-item"><b>fusion_transcript: </b>This column contains the assembled fusion transcript.</li>
+            <li class="list-group-item"><b>reading_frame: </b>This column states whether the gene at the 3' end of the fusion is fused in-frame or out-of-frame</li>
+            <li class="list-group-item"><b>peptide_sequence: </b>This column contains the fusion peptide sequence.</li>
+            <li class="list-group-item"><b>read_identifiers: </b>This column contains the names of the supporting reads separated by commas.</li>
+        </ol>
+
+        <h5>Method:</h5>
+        <p>
+            <a href="https://github.com/suhrig/arriba">Arriba</a> is a command-line tool for the detection
+            of gene fusions from RNA-Seq data.
+            It was developed for the use in a clinical research setting.
+            Therefore, short runtimes and high sensitivity were important design criteria.
+            It is based on the ultrafast STAR aligner, and the post-alignment runtime is typically just ~2 minutes.
+        </p>
+    </div>
+
+</div>

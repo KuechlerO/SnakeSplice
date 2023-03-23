@@ -1,0 +1,15 @@
+# This environment is designed for Linux -> Not suitable for e.g. MacOS
+# Inspiration: https://githubmemory.com/repo/davidaknowles/leafcutter/issues/188
+
+name: dexseq_env
+
+channels:
+  - bioconda
+  - conda-forge
+
+dependencies:
+  - r-base
+  - bioconductor-dexseq>=1.14
+  - htseq
+  - pysam
+  - pandas

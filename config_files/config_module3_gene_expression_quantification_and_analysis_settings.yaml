@@ -1,0 +1,131 @@
+# =============== Configuration file for module: Detection and quantification =============
+# Use this config-file to switch on/off the features that you need for your personal research.
+# Furthermore, you can set the detailed parameters for the respective features.
+
+module3_gene_expression_quantification_and_analysis_settings:
+  # =============== 1.1 Switch variables =============
+  switch_variables:
+    run_cufflinks_analysis:   False  # Run cufflinks analysis
+    run_cummerbund_analysis:  False   # Run cummerbund analysis: Summarizes and visualizes Cufflink's output
+    run_outrider_analysis:   True     # Run Outrider analysis: Identifies gene expression outliers
+    run_salmon_analysis:      True   # Run salmon analysis: Quantifies transcripts
+    run_kallisto_analysis:    True   # Run kallisto analysis: Quantifies transcripts
+    run_rsem_analysis:        True   # Run rsem analysis: Quantifies transcripts & gene expression
+
+  # =============== 1.2 Output directories =============
+  # The output directories for the respective tool-outputs are defined here.
+  # This is important for importing the outputs into the GUI
+  output_directories:
+    cufflinks_output_dir: "cufflinks"
+    cummerbund_output_dir: "cufflinks/cummerbund_figures"
+    outrider_output_dir: "outrider"
+    salmon_output_dir: "salmon"
+    kallisto_output_dir: "kallisto"
+    rsem_output_dir: "rsem"
+
+  # =============== 2. Required settings & input files for submodules =============
+  # ATTENTION: Use absolute paths when defining input file paths!!!
+
+  # Directory, where the alignment results are stored
+  # Choices:
+  #   1. star               - Uses the STAR-alignment results
+  #   2. olego              - Uses the Olego-alignment results
+  #   3. directory-URI      - Searches the given directory for BAM-files
+  # Expects for every sample to have a subdirectory with the same name as the sample name!
+  # E.g. dir: "output/star" -> expects as input: "output/star/{sample}/{sample}.sorted.bam"
+  # ATTENTION: STAR is recommended for gene fusion detection with arriba due to compatibility
+  input_dir_of_bam_files:
+    "star"
+    # "olego"
+    # "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/output/module_qc_preproc_and_alignment/output/star"
+
+  # Attributes of aligned files (input BAM files)
+  bam_files_attributes:
+    filename_extension: # File extension of the input BAM files
+      ".sorted.bam"
+    paired:
+      True          # Either True or False
+    sorted:
+      "position"      # Either position (for position-sorted) or name (for name-sorted)
+
+  # --------- 2.2 Cufflinks settings ---------
+  cufflinks_settings:
+    # Reference genome annotation file (GTF)
+    reference_genome_annotation_file:
+      # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/annotation_files/hg19.ncbiRefSeq.gtf"
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ncbi_sourced/GRCh37_latest_genomic.gtf"
+
+    # Reference genome fasta file
+    reference_genome_fasta_file:
+      # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/hg19_analysis_set/hg19.p13.plusMT.no_alt_analysis_set.fa"
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ncbi_sourced/hg19.p13.plusMT.no_alt_analysis_set.fa"
+
+    # Link: http://cole-trapnell-lab.github.io/cufflinks/cufflinks/index.html
+    min_isoform_fraction: 0.05      # suppress transcripts below this abundance level (compared with major isoform of the gene)
+    min_frags_per_transfrag: 5      # assembled transfrags supported by fewer than this many aligned RNA-Seq fragments are ignored
+    extra_options_cufflinks: ""
+    extra_options_cuffdiff: ""
+
+  # --------- 2.3 Cummerbund settings ---------
+  cummerbund_settings:
+    genes_for_detailed_overview:
+      []                      # If set, a detailed overview of the gene is created E.g. ["BUD13", "BUD31"]
+    genome_build: "hg19"    # Genome build of the reference genome (used by cummerbund beforehand...)
+
+  # --------- 2.4 OUTRIDER settings ---------
+  outrider_settings:
+    # ATTENTION: This tool requires GTF-files in the Ensembl format!
+    # Links:
+    # GRCh37: http://ftp.ensembl.org/pub/grch37/current/gtf/homo_sapiens/Homo_sapiens.GRCh37.87.gtf.gz
+    # GRCh38: http://ftp.ensembl.org/pub/current_gtf/homo_sapiens/Homo_sapiens.GRCh38.107.gtf.gz
+
+    # In case, where alignment files (BAM/SAM) have been created with an annotation file different from Ensembl,
+    # the annotation file needs to be converted to the Ensembl format (transforming chr1 -> 1).
+    require_gtf_chromosome_name_conversion:
+      True
+
+    ensemble_sourced_gtf_file:
+      # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/ensembl_hg19/Homo_sapiens.GRCh37.87.gtf"
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ensembl_sourced/Homo_sapiens.GRCh37.87.gtf"
+
+    # In order to stabilize the distribution estimation with further data, you can include external count data.
+    # Recommended sets are available under "Datasets" on following page: https://github.com/gagneurlab/drop
+    # additional_count_file:
+    #   "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/additional_count_data/fib_ss--hg19--gencode34/geneCounts.tsv"
+    #   "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/fib_ns--hg19--gencode34/geneCounts.tsv"
+
+    # Declare specific genes of interest -> Separate plots will be created for these genes
+    genes_of_interest:
+      [ "ENSG00000137656-BUD13", "ENSG00000119760-SUPT7L" ]
+
+  # --------- 2.5 Salmon settings ---------
+  salmon_settings:
+    # Provide absolute path to a FASTA-file (can be compressed) containing the reference transcriptome
+    transcriptome_fasta:
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_transcriptomes/ensembl_sourced/gencode.v42.transcripts.fa.gz"
+    # Provide absolute path to a FASTA file (can be compressed) of the reference genome
+    genome_fasta:
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_transcriptomes/ensembl_sourced/GRCh38.primary_assembly.genome.fa.gz"
+
+    # Whether to include a Gene Set Enrichment Analysis (GSEA)
+    run_gse_analysis:
+      False
+
+  # --------- 2.6 Kallisto settings ---------
+  kallisto_settings:
+    # Provide absolute path to a FASTA-file (can be compressed) containing the reference transcriptome
+    transcriptome_fasta:
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_transcriptomes/ensembl_sourced/gencode.v42.transcripts.fa.gz"
+    # Provide absolute path to a FASTA file (can be compressed) of the reference genome
+    genome_fasta:
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_transcriptomes/ensembl_sourced/GRCh38.primary_assembly.genome.fa.gz"
+
+    # Whether to include a Gene Set Enrichment Analysis (GSEA)
+    run_gse_analysis:
+      False
+
+  # --------- 2.7 RSEM settings ---------
+  rsem_settings:
+    # Provide absolute path to a FASTA-file (can be compressed) containing the reference transcriptome
+    transcriptome_fasta:
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_transcriptomes/ensembl_sourced/gencode.v42.transcripts.fa.gz"

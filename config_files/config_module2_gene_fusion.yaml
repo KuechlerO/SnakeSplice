@@ -1,0 +1,73 @@
+# =============== Configuration file for module: Gene Fusion detection =============
+# Use this config-file to switch on/off the features that you need for your personal research.
+# Furthermore, you can set the detailed parameters for the respective features.
+
+
+# =============== 1. Module: Gene Fusion Detection - Primary settings =============
+module2_gene_fusion_detection_settings:
+
+ # ------- 1.1 Tool Switches --------
+  switch_variables:
+    run_fusion_detection_with_arriba: True      # Detect gene fusion events with Arriba
+    # run_fusion_detection_with_cicero: True      # Detect gene fusion events with Cicero
+
+  # =============== 1.2 Output directories =============
+  # The output directories for the respective tool-outputs are defined here.
+  # This is important for importing the outputs into the GUI
+  output_directories:
+    arriba_output_dir: "arriba"
+
+
+  # =============== 2. Required settings & input files for selected functionalities =============
+  # =============== 2.1 BAM files =============
+  # ATTENTION: Use absolute paths when defining input file paths!!!
+
+  # Directory, where the alignment results are stored
+  # Choices:
+  #   1. star               - Uses the STAR-alignment results
+  #   2. olego              - Uses the Olego-alignment results
+  #   3. directory-URI      - Searches the given directory for BAM-files
+  # Expects for every sample to have a subdirectory with the same name as the sample name (see following example)!
+  # E.g. dir: "output/star" -> expects as input: "output/star/{sample}/{sample}.sorted.bam"
+  input_dir_of_bam_files:
+    # "star"
+    # "olego"
+    # "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/output/module_qc_preproc_and_alignment/output/star"
+    "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/output/module1_qc_preproc_and_alignment/output/olego"
+
+  # Attributes of aligned files (input BAM files)
+  bam_files_attributes:
+    filename_extension: # File extension of the input BAM files
+      ".sorted.bam"
+    paired:
+      True          # Either True or False
+    sorted:
+      "position"      # Either position (for position-sorted) or name (for name-sorted)
+
+
+  # 2.1 Arriba: Detect gene fusion events with Arriba
+  arriba_settings:
+    # Reference genome annotation file for arriba (see here: https://arriba.readthedocs.io/en/latest/input-files/#reference-genome-annotation)
+    reference_genome_annotation_file:
+      # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/annotation_files/hg19.ncbiRefSeq.gtf"
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ncbi_sourced/GRCh37_latest_genomic.gtf"
+    # Reference genome fasta file for arriba (see here: https://arriba.readthedocs.io/en/latest/input-files/#reference-genome-annotation)
+    reference_genome_fasta_file:
+      # "/sc-projects/sc-proj-btg/olik_splicing_project/input_data/reference_genome/hg19_analysis_set/hg19.p13.plusMT.no_alt_analysis_set.fa"
+      "/Users/oliverkuchler/Studium/Master_BioInfo_Berlin/Masterthesis/Topic_Splicing_Variants/splice-prediction/snakemake_workflows/Snakemake_Main/local_test/reference_genomes/ncbi_sourced/hg19.p13.plusMT.no_alt_analysis_set.fa"
+
+
+    # Optional settings for arriba (see here: https://arriba.readthedocs.io/en/latest/command-line-options/)
+    arriba_optional_arguments: ""   # default: nothing
+
+    # Strongly recommended: Optional blacklist file for arriba (see here: https://arriba.readthedocs.io/en/latest/input-files/#blacklist)
+    arriba_blacklist_file:
+      # ATTENTION: Choose blacklist file that fits to chosen reference genome!
+      # 1. default: nothing"
+      # ""
+      # 2. For hg19 reference genome
+      "/sc-scratch/sc-scratch-btg/olik_splicing_project/splice-prediction/snakemake_workflows/Snakemake_Main/input_data/arriba_blacklist/blacklist_hg19_hs37d5_GRCh37_v2.3.0.tsv.gz"
+      # 3. For hg38 reference genome
+      # "/sc-scratch/sc-scratch-btg/olik_splicing_project/splice-prediction/snakemake_workflows/Snakemake_Main/input_data/arriba_blacklist/blacklist_hg38_GRCh38_v2.3.0.tsv.gz"
+
+

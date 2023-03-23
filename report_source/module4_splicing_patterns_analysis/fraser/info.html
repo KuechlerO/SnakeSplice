@@ -1,0 +1,45 @@
+<div class="output_documentation_box">
+
+    <h3>Output Documentation</h3>
+
+    <p>
+        Summary of FRASER's results: Detection of rare aberrant splicing events in transcriptome profiles.
+        Significant events for aberrant splice junctions or splice sites,
+        based on the specified cutoffs (default: adjusted p-value < 0.05), are displayed.
+    </p>
+    <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDiv"
+            aria-expanded="false" aria-controls="collapseDiv">
+        Show details
+    </button>
+
+    <div class="collapse" id="collapseDiv">
+        <h5 class="pt-5">Column descriptions:</h5>
+        <ol class="list-group pb-5">
+            <li class="list-group-item"><b>sampleID</b>: the sampleID in which this aberrant event occurred.</li>
+            <li class="list-group-item"><b>hgncSymbol</b>: the gene symbol of the gene that contains the splice junction or site if available.</li>
+            <li class="list-group-item"><b>addHgncSymbols</b>: Additional gene symbols of overlapping genes that contain the splice junction or site as well.</li>
+            <li class="list-group-item"><b>type</b>: the metric for which the aberrant event was detected (either psi5 for $\psi_5$, psi3 for $\psi_3$ or theta for $\theta$).</li>
+            <li class="list-group-item"><b>pValue</b>: the p-value of this event.</li>
+            <li class="list-group-item"><b>padjust</b>: the adjusted p-value of this event.</li>
+            <li class="list-group-item"><b>zScore</b>: the z-score of this event.</li>
+            <li class="list-group-item"><b>psiValue</b>: the value of $\psi_5$, $\psi_3$ or $\theta$ metric (depending on the type column) of this junction or splice site for the sample in which it is detected as aberrant.</li>
+            <li class="list-group-item"><b>deltaPsi</b>: the $\Delta\psi$-value of the event in this sample, which is the difference between the actual observed $\psi$ and the expected $\psi$.</li>
+            <li class="list-group-item"><b>meanCounts</b>: the mean count (k) of reads mapping to this splice junction or site over all samples.</li>
+            <li class="list-group-item"><b>meanTotalCounts</b>: the mean total count (n) of reads mapping to the same donor or acceptor site as this junction or site over all samples.</li>
+            <li class="list-group-item"><b>counts</b>: the count (k) of the splice junction or site for the sample where it is detected as aberrant.</li>
+            <li class="list-group-item"><b>totalCounts</b>: the total count (n) of the splice junction or site for the sample where it is detected as aberrant.</li>
+        </ol>
+
+        <h5>Method:</h5>
+        <p>
+            <a href="http://www.bioconductor.org/packages/release/bioc/html/FRASER.html">FRASER</a>:
+            Detection of rare aberrant splicing events in transcriptome profiles.
+            Read count ratio expectations are modeled by an autoencoder to control for confounding factors in the data.
+            Given these expectations, the ratios are assumed to follow a beta-binomial distribution with a junction specific dispersion.
+            Outlier events are then identified as read-count ratios that deviate significantly from this distribution.
+            FRASER is able to detect alternative splicing, but also intron retention.
+            The package aims to support diagnostics in the field of rare diseases where RNA-seq is performed to identify aberrant splicing defects. .
+        </p>
+    </div>
+
+</div>

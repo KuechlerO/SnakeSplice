@@ -1,0 +1,66 @@
+<div class="output_documentation_box">
+
+    <h3>Output Documentation</h3>
+
+    <p>
+        Summary of DEXSeq's results regarding the differential exon usage using RNA-seq exon counts
+        between samples with different experimental designs.
+        <br><br>
+        <b>Attention: </b>Results have been prefiltered to only include significant events (p-value <0.05).
+        If the results are more than 1000 lines, only the first 1000 lines are shown.
+    </p>
+    <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDiv"
+            aria-expanded="false" aria-controls="collapseDiv">
+        Show details
+    </button>
+
+    <div class="collapse" id="collapseDiv">
+        <h5 class="pt-5">Column descriptions:</h5>
+        <p>
+            For event event-specific columns please visit the rMATS-
+            <a href="https://github.com/Xinglab/rmats-turbo/blob/v4.1.2/README.md">ReadMe.</a>
+        </p>
+        <ol class="list-group pb-5">
+            <li class="list-group-item"><b>ensembl_gene_id: </b>Ensembl-ID of analyzed gene</li>
+            <li class="list-group-item"><b>gene_name: </b>Entrez gene name</li>
+            <li class="list-group-item"><b>featureID: </b>The considered features (i.e. exon)</li>
+            <li class="list-group-item"><b>exonBaseMean: </b>Mean of normalized counts for considered exon</li>
+            <li class="list-group-item"><b>dispersion: </b>Estimated exon dispersion (information on the strength of the noise is inferred from the biological replicates in the data set)</li>
+            <li class="list-group-item"><b>stat: </b>LRT statistic: Control vs Condition</li>
+            <li class="list-group-item"><b>pvalue: </b>Computed LRT p-value</li>
+            <li class="list-group-item"><b>padj: </b>Multiple testing corrected p-value (Benjamini-Hochberg).</li>
+            <li class="list-group-item"><b>[Condition/Control]: </b>Exon usage coefficient</li>
+            <li class="list-group-item"><b>log2fold_[Control]_[Condition]: </b>Relative exon usage fold change</li>
+            <li class="list-group-item"><b>genomicData.seqnames: </b>Chromosome name of feature location</li>
+            <li class="list-group-item"><b>genomicData.start: </b>Genomic start position of feature</li>
+            <li class="list-group-item"><b>genomicData.end: </b>Genomic end position of feature</li>
+            <li class="list-group-item"><b>genomicData.width: </b>Genomic width of feature</li>
+            <li class="list-group-item"><b>genomicData.strand: </b>Genomic strand location of feature</li>
+            <li class="list-group-item"><b>transcripts: </b>list of transcripts overlapping with the exon</li>
+        </ol>
+
+        <h5>Method:</h5>
+        <p>
+            <a href="https://bioconductor.org/packages/release/bioc/html/DEXSeq.html">DEXSeq</a> is
+            focused on finding differential exon usage using RNA-seq exon counts between samples with different experimental designs.
+            It provides functions that allows the user to make the necessary statistical tests based on a model that uses
+            the negative binomial distribution to estimate the variance between biological replicates and generalized linear models for testing.
+            The package also provides functions for the visualization and exploration of the results.
+
+            <br><br>
+            The basic concept
+            can be summarized as follows. For each exon (or part of an exon) and each
+            sample, we count how many reads map to this exon and how many reads map to
+            any of the other exons of the same gene. We consider the ratio of these two
+            counts, and how it changes across conditions, to infer changes in the relative
+            exon usage. In the case of an inner exon, a change in relative exon usage
+            is typically due to a change in the rate with which this exon is spliced
+            into transcripts (alternative splicing). Note, however, that DEU is a more
+            general concept than alternative splicing, since it also includes
+            changes in the usage of alternative transcript start sites
+            and polyadenylation sites, which can cause differential usage of
+            exons at the 5' and 3' boundary of transcripts.
+        </p>
+    </div>
+
+</div>

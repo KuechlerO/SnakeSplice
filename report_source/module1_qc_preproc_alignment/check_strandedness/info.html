@@ -1,0 +1,42 @@
+<div class="output_documentation_box">
+
+    <h3>Output Documentation</h3>
+
+    <p>
+        The output is a summary of the strandedness analysis for the given RNA-Seq experiments.
+    </p>
+    <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDiv"
+            aria-expanded="false" aria-controls="collapseDiv">
+        Show details
+    </button>
+
+    <div class="collapse" id="collapseDiv">
+        <h5 class="pt-5">Column descriptions:</h5>
+        <ol class="list-group pb-5">
+            <li class="list-group-item"><b>sample: </b>The name of the analyzed sample.</li>
+            <li class="list-group-item"><b>Fraction.of.reads.failed.to.determine.strandedness: </b>The fraction of reads that were failed to determine the strandedness.</li>
+            <li class="list-group-item"><b>Fraction.of.reads.explained.by.FR: </b>he fraction of reads that were explained by FR (forward stranded RNAseq).</li>
+            <li class="list-group-item"><b>Fraction.of.reads.explained.by.RF: </b>The fraction of reads that were explained by RF (reverse stranded RNAseq).</li>
+            <li class="list-group-item"><b>Summary: </b>The summary verdict returned by the tool.</li>
+            <li class="list-group-item"><b>Conclusion: </b>The conclusion of the tool.</li>
+            <li class="list-group-item"><b>stranded-value: </b>Strandedness value, that has to be used in the sample-annotation-file for further downstream analysis with this workflow.</li>
+        </ol>
+
+        <h5>Method:</h5>
+        <p>
+            <a href="https://github.com/signalbash/how_are_we_stranded_here">check_strandedness.py</a> is a
+            Python package for testing strandedness of RNAseq FASTQ files.
+        </p>
+        <p>
+            check_strandedness.py runs a series of commands to check which direction reads align once mapped in transcripts.
+            It first creates a kallisto index (or uses a pre-made index) of your organisms transcriptome.
+            It then maps a small subset of reads (default 200000) to the transcriptome, and uses kallisto's --genomebam
+            argument to project pseudoalignments to genome sorted BAM file.
+            It finally runs RSeQC's infer_experiment.py to check which direction reads from the first and second pairs
+            are aligned in relation to the transcript strand, and provides output with the likely strandedness of your data.
+            The following lines describe the content of each column of the output table that is presented on top of the page.
+        </p>
+
+    </div>
+
+</div>

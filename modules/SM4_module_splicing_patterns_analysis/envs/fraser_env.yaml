@@ -1,0 +1,11 @@
+name: fraser_env
+
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+
+dependencies:
+  - bioconductor-fraser
+  - bioconductor-txdb.hsapiens.ucsc.hg19.knowngene
+  - bioconductor-org.hs.eg.db

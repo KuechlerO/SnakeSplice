@@ -1,0 +1,10 @@
+name: irfinder_env
+
+channels:
+  - bioconda
+
+dependencies:
+  - irfinder
+  - samtools>=1.4
+  - bedtools>=2.20
+  - star>=2.4.0h

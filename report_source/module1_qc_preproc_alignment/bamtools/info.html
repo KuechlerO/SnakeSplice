@@ -1,0 +1,41 @@
+<div class="output_documentation_box">
+
+    <h3>Output Documentation</h3>
+
+    <p>
+        The output is a summary of the "samtools stat" output for every single input sample.
+    </p>
+    <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDiv"
+            aria-expanded="false" aria-controls="collapseDiv">
+        Show details
+    </button>
+
+    <div class="collapse" id="collapseDiv">
+        <h5 class="pt-5">Column descriptions:</h5>
+        <ol class="list-group pb-5">
+            <li class="list-group-item"><b>BAM.file: </b>The name of the analyzed alignment file of a given sample.</li>
+            <li class="list-group-item"><b>Total.reads </b>Total number of included reads.</li>
+            <li class="list-group-item"><b>Mapped.reads: </b>Total number of included mapped reads.</li>
+            <li class="list-group-item"><b>Forward strand: </b>Total number of reads mapped against the forward strand.</li>
+            <li class="list-group-item"><b>Reverse strand: </b>Total number of reads mapped against the reverse strand.</li>
+            <li class="list-group-item"><b>Failed QC: </b>Total number of reads that failed Quality Control (flag 0x200 (512) is set).</li>
+            <li class="list-group-item"><b>Duplicates: </b>Number of duplicate reads (flag 0x400 (1024) is set).</li>
+            <li class="list-group-item"><b>Paired.end.reads: </b>Number of paired reads.</li>
+            <li class="list-group-item"><b>X.Proper.pairs: </b>Number of properly paired reads (flag 0x2 (2) is set).</li>
+            <li class="list-group-item"><b>Both.pairs.mapped: </b>Total number of pairs where both reads are mapped.</li>
+            <li class="list-group-item"><b>Read.1: </b>Number of first reads.</li>
+            <li class="list-group-item"><b>Read.2: </b>Number of second reads.</li>
+            <li class="list-group-item"><b>Singletons: </b>Number of reads without pairing.</li>
+        </ol>
+
+        <h5>Method:</h5>
+        <p>
+            <a href="http://www.htslib.org/doc/samtools-stats.html">Samtools Stats</a> is part of the
+            <a href="http://www.htslib.org/">Samtools toolkit</a> and produces comprehensive statistics from alignment
+            files in the SAM/BAM/CRAM format.
+            It is a useful tool for evaluating the quality of an alignment and can be used to compare the quality
+            of different alignment methods.
+        </p>
+    </div>
+
+</div>

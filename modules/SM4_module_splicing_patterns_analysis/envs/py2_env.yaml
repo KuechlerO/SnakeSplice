@@ -1,0 +1,6 @@
+name: py2_env
+channels:
+  - bioconda
+  - default
+dependencies:
+- python=2.7

@@ -1,0 +1,70 @@
+description: Schema for the PEP-based configuration file of this project
+
+# Firstly import basic schema, which covers basic PEP requirements
+# Then import schemas for respective sub-projects
+imports:
+  # - http://schema.databio.org/pep/2.1.0.yaml
+  - pep/2.1.0.yaml
+
+
+# ----------- Define schema -------------
+properties:
+  samples:
+    type: array
+    items:
+      type: object
+      properties:
+        sample_directory:
+          type: string
+          description: "Directory, where sample is stored"
+        read1:
+          type: string
+          pattern: "^\\S*_R1.(fq|fastq){1}(.gz)?$"
+          description: "Fastq file for read 1, needs to end with _R1.fastq or _R1.fastq.gz"
+        read2:
+          type: string
+          pattern: "^\\S*_R2.(fq|fastq){1}(.gz)?$"
+          description: "Fastq file for read 2, needs to end with _R2.fastq or _R2.fastq.gz"
+        control:
+          type: string
+          pattern: "^(true|false)$"
+          description: "Set to true, if sample is a control sample"
+        condition:
+          type: string
+          pattern: "^\\S+$"
+          description: "Condition details: E.g. None, BUD13-Variant, SUPT7L-Variant, ..."
+        protocol:
+          type: string
+          pattern: "^(RNAseq-PolyA|RNAseq-RiboD)$"
+          description: "Either RNAseq-PolyA or RNAseq-RiboD"
+        stranded:
+          type: string
+          pattern: "^(no|yes|reverse)$"
+          description: "No, if library is unstranded, yes if library is stranded, reverse if library is reverse stranded"
+        adaptors_file:
+          type: string
+          pattern: "^/\\S+$"     # Enforcing absolute paths: E.g. "/Users/adaptors/seq_adaptors.fa"
+          description: "Path to file containing adaptors"
+        additional_comment:
+          type: string
+          pattern: "^.*$"
+          description: "Space for additional comments"
+
+      required:         # Denotes required attributes
+        - sample_directory
+        - read1
+        - read2
+        - control
+        - condition
+        - adaptors_file
+      files:            # Denotes files
+        - read1
+        - read2
+        - adaptors_file
+      required files:   # Denotes required files: Currently both read files are required -> Only paired-end reads are allowed
+        - read1
+        - read2
+        - adaptors_file
+
+required:
+- samples

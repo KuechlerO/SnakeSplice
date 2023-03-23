@@ -1,0 +1,49 @@
+<div class="output_documentation_box">
+
+    <h3>Output Documentation</h3>
+
+    <p>
+        Summary of OUTRIDER's result for the detection of aberrantly expressed genes by identying
+        aberrant read counts in RNA-seq data.
+        Only significant differentially expressed genes (adjusted p-value < 0.10) are shown.
+    </p>
+    <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDiv"
+            aria-expanded="false" aria-controls="collapseDiv">
+        Show details
+    </button>
+
+    <div class="collapse" id="collapseDiv">
+        <h5 class="pt-5">Column descriptions:</h5>
+        <ol class="list-group pb-5">
+            <li class="list-group-item"><b>geneID: </b>Gene ID (Ensembl) and its symbol are displayed.</li>
+            <li class="list-group-item"><b>sampleID: </b>The identified sample.</li>
+            <li class="list-group-item"><b>pValue: </b>The nominal P-value indicating the outlier status.</li>
+            <li class="list-group-item"><b>padjust : </b>The FDR corrected P-value indicating the outlier status.</li>
+            <li class="list-group-item"><b>zScore: </b>Computed z-score.</li>
+            <li class="list-group-item"><b>l2fc: </b>Computed log2-fold-change.</li>
+            <li class="list-group-item"><b>rawcounts: </b>The observed read counts.</li>
+            <li class="list-group-item"><b>normcounts: </b>The expected count given the fitted
+          autoencoder model for the given gene-sample combination.</li>
+            <li class="list-group-item"><b>meanCorrected: </b>For this gene, the mean of the
+                expected counts, respectively, given the fitted autoencoder model.
+            <li class="list-group-item"><b>theta: </b>The dispersion parameter of the NB distribution
+          for the given gene.</li>
+            <li class="list-group-item"><b>aberrant: </b>The outlier status of this event: Either TRUE or FALSE.</li>
+            <li class="list-group-item"><b>AberrantBySample: </b>Number of outliers for the given sample.</li>
+            <li class="list-group-item"><b>AberrantByGene: </b>Number of outliers for the given gene.</li>
+            <li class="list-group-item"><b>padj_rank: </b>Rank of this outlier event within the given sample.</li>
+        </ol>
+
+        <h5>Method:</h5>
+        <p>
+            <a href="https://bioconductor.org/packages/release/bioc/html/OUTRIDER.html">OUTRIDER</a>: Identification
+            of aberrant gene expression in RNA-seq data.
+            Read count expectations are modeled by an autoencoder to control for confounders in the data.
+            Given these expectations, the RNA-seq read counts are assumed to follow a negative binomial
+            distribution with a gene-specific dispersion.
+            Outliers are then identified as read counts that significantly deviate from this distribution.
+            Furthermore, OUTRIDER provides useful plotting functions to analyze and visualize the results.
+        </p>
+    </div>
+
+</div>

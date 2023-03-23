@@ -1,0 +1,7 @@
+name: alfa_env
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - alfa
+  - python=3.7

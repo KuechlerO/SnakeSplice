@@ -1,0 +1,2 @@
+`Leafcutter <https://davidaknowles.github.io/leafcutter/>`_ quantifies RNA splicing variation using short-read RNA-seq data.
+The core idea is to leverage spliced reads (reads that span an intron) to quantify (differential) intron usage across samples.

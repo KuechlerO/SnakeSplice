@@ -1,0 +1,50 @@
+# This workflow runs the module "Detection and Quantification of Transcripts"
+
+import os
+
+
+# ============== 0: Configuration settings ==============
+
+# ----------- 0.1: Sample annotations: Made portable by using PEP -----------
+pepfile: "./pep/pep_config.yaml"
+pepschema: "./../../pep/pep_schema_config.yaml"
+
+# ----------- 0.2: Config file -----------
+# Not needed
+
+# ============== 1: Imports ==============
+# --------------- 1.0: Import helper functions ----------------
+include:    "./../../scripts/main_helper_functions.smk"
+
+
+
+# ============== 2: Rules for report generation ==============
+rule create_input_file_overview_report_html:
+    input:
+        rules.main_helper_export_pep_table_with_annotations.output,
+    output:
+        report(
+            "output/input_file_overview.html",
+            # Path relative to Snakefile
+            caption="../../report_source/module0_report_generation/caption.rst",
+            category="Input data",
+        ),
+    params:
+        input_files = lambda wildcards,input: [input[0]],
+        data_separators=[","],
+        data_titles=["Annotation overview for selected input samples"],
+        info_texts=[workflow.source_path("../../report_source/module0_report_generation/info.html")],
+        html_output_dir=lambda wildcards, output: os.path.dirname(output[0]),
+        html_output_file_basenames=lambda wildcards, output: [os.path.basename(output[0])]
+    conda:
+        "../../report_source/report_env.yaml"
+    script:
+        "../../scripts/create_report_html_files.R"
+
+
+# ======== Main rule ===========
+rule complete_output:
+    input:
+        rules.create_input_file_overview_report_html.output
+
+

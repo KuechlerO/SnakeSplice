@@ -1,0 +1,46 @@
+<div class="output_documentation_box">
+
+    <h3>Output Documentation</h3>
+
+    <p>
+        Result of the analysis of differentially expressed genes.
+        Quantification of the differentially expressed genes was done with Kallisto, while
+        the differential expression analysis was done with DESeq2.
+        Only significant differentially expressed genes (adjusted p-value < 0.10)  are shown.
+        The experiment was done between the annotated control samples and one given condition (see workflow
+        annotation).
+    </p>
+    <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDiv"
+            aria-expanded="false" aria-controls="collapseDiv">
+        Show details
+    </button>
+
+    <div class="collapse" id="collapseDiv">
+        <h5 class="pt-5">Column descriptions:</h5>
+        <ol class="list-group pb-5">
+            <li class="list-group-item"><b>subject: </b>Gene ID (Ensembl).</li>
+            <li class="list-group-item"><b>baseMean: </b>Normalized expression (TPM) mean of all samples in the dataset.</li>
+            <li class="list-group-item"><b>log2FoldChange: </b>Estimation: Log-2 Fold Change (Control vs. Condition).</li>
+            <li class="list-group-item"><b>lfcSE: </b>Standard error for the log-fold-change estimation.</li>
+            <li class="list-group-item"><b>pvalue: </b>Computed p-value (Wald test) for measuring this gene as differentially expressed.</li>
+            <li class="list-group-item"><b>padj: </b>Adjusted p-value (Benjamini Hochberg) for measuring this gene as differentially expressed.</li>
+            <li class="list-group-item"><b>symbol: </b>Official gene symbol (Entrez)</li>
+            <li class="list-group-item"><b>entrez: </b>Gene-ID (Entrez)</li>
+        </ol>
+
+        <h5>Method:</h5>
+        <p>
+            <a href="https://pachterlab.github.io/kallisto">Kallisto</a> is a tool to quantify RNA-seq data.
+            The kallisto algorithm uses a pseudo alignment approach to speed up the alignment procedure.
+            The "pseudo alignment" approach can quantify reads without making actual alignments.
+            Kallisto can handle paired-end and single-end reads.
+            It reports transcripts per million mapped reads (TPM).
+        </p>
+        <p>
+            <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8">DESeq2</a> estimates
+            variance-mean dependences in count data from high-throughput sequencing assays and
+            tests for differential expression based on a model using the negative binomial distribution.
+        </p>
+    </div>
+
+</div>
