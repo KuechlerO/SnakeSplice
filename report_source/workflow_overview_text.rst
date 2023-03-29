@@ -1,8 +1,8 @@
-Olis RNAseq analysis workflow
+SnakeSplice
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The presented report was automatically created by
-`Olis RNAseq analysis workflow <https://git.bihealth.org/btg/projects/splice-prediction/>`_
+`SnakeSplice <https://github.com/KuechlerO/SnakeSplice/>`_
 and displays the analysis results for the given input samples.
 
 
@@ -19,18 +19,15 @@ The report is divided into the following sections:
 		Gene fusions can be a common phenomenon in e.g. cancer cells.
 		To detect possible gene fusions, the Arriba tool is used.
 
-	3. **Module: Variant Calling and Annotation**
-		*This feature is currently under development.*
-
-	4. **Module: Gene expression quantification and analysis**
+	3. **Module: Gene expression quantification and analysis**
 		In order to quantify the expression of genes and transcripts,
 		this modules employs the Salmon, and Kallisto tools.
 		Furthermore, downstream analysis of the quantification results
 		is possible, including differential expression analysis,
 		and gene set enrichment analysis.
-		Additionally Outlier analysis can be performed.
+		Additionally, an outlier analysis can be performed.
 
-	5. **Module: Analysis of Splicing Patterns**
+	4. **Module: Analysis of Splicing Patterns**
 		The analysis of Splicing patterns is performed using the
 		various tools, which overall results are presented in a
 		final summary table.
