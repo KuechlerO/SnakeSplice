@@ -12,7 +12,7 @@ special focus on the exploration of differential splicing behaviours.
   * [Input Data](#input-data)
     + [Starting with FASTQ files](#starting-with-fastq-files)
     + [Starting with BAM files](#starting-with-bam-files)
-    + [Reference files](#reference-files)
+  * [Reference files](#reference-files)
   * [Configurations](#configurations)
     + [Main Configuration File - `config_files/config_main.yaml`](#main-configuration-file---config_filesconfig_mainyaml)
     + [Module Configuration Files - `config_files/config_moduleX.yaml`](#specific-module-configuration-files)
@@ -28,7 +28,7 @@ The given parent workflow is a wrapper workflow, which includes the following su
 3. Module3: Transcript Quantification & Expression Analysis
 4. Module4: Splice Pattern Analysis
 
-![SnakeSplice Workflow Diagramm](docs/snakesplice_workflow_diagramm.png)
+![SnakeSplice Workflow Diagram](docs/snakesplice_workflow_diagram.png)
 
 
 ## Software Requirements
@@ -72,21 +72,22 @@ In this case, the sample sheet has to be filled with the information about the F
 SnakeSplice also supports the execution of the workflow starting with BAM files.\
 In this case the location and further information of the BAM-files have to be specified in the respective configuration files (path: `config_files/config_moduleX.yaml`).\
 
-#### Reference files
+### Reference files
 Some tools require reference files, which need to be user-provided.\
-The location of these reference files have to be specified in the respective configuration files (path: `config_files/config_moduleX.yaml`).\
+The location of these reference files have to be specified in the respective configuration files (path: `config_files/config_moduleX.yaml`).
 
-**Our recommendation**:\
-We recommend to use the same reference files for all samples, as the reference files are not adjusted to the samples.\
-##### Reference genome and gene annotation file
+**Our recommendation**:
+We recommend to use the same reference files for all samples, as the reference files are not adjusted to the samples.
+
+#### Reference genome and gene annotation file
 We recommend an analysis set reference genome. Its advantages over other common forms of reference genomes can
 be read [here](https://gatk.broadinstitute.org/hc/en-us/articles/360041155232-Reference-Genome-Components).\
-Such a reference genome can be downloaded from the UCSC Genome Browser.\
-- Download a suitable FASTA-file of reference genome (e.g. analysis set reference genome for hg19):\
+Such a reference genome can be downloaded from the UCSC Genome Browser.
+- Download a suitable FASTA-file of reference genome (e.g. analysis set reference genome for hg19):
     [Example link for hg19 reference genome](https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/analysisSet/hg19.p13.plusMT.no_alt_analysis_set.fa.gz)
-- Further annotation files can be downloaded from the UCSC Genome Browser.\
+- Further annotation files can be downloaded from the UCSC Genome Browser.
     [Example link for hg19 gene annotation file](https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/genes/hg19.ncbiRefSeq.gtf.gz)
-- Some tools explicitly require ENSEMBL-based annotations:\
+- Some tools explicitly require ENSEMBL-based annotations:
     [ENSEMBL Downloads](https://www.ensembl.org/info/data/ftp/index.html)
 
 
@@ -116,10 +117,10 @@ Every submodule has its own configuration file, which holds the settings for the
 The configuration files are located in the directory `config_files` and have the following naming scheme:
 `config_module{X}_{module_name}.yaml`, where `X` is the number of the submodule and `module_name` is the name of the submodule.
 The configuration files are structured in the following way:
-1. switch variables - `switch_variables`:\ Here, the user can switch on/off the different steps of the submodule.
-2. output directories - `output_directories`:\ Here, the user can adjust the names of the output directories per tool.
-3. bam files attributes - `bam_files_attributes`:\ Some tools require additional information about the BAM files, which are not provided in the sample sheet. This information can be specified here.
-4. tool-specific settings - `tool_specific_settings`:\ Here, the user can adjust the settings for the different tools, which are used in the submodule.
+1. switch variables - `switch_variables`: Here, the user can switch on/off the different steps of the submodule.
+2. output directories - `output_directories`: Here, the user can adjust the names of the output directories per tool.
+3. bam files attributes - `bam_files_attributes`: Some tools require additional information about the BAM files, which are not provided in the sample sheet. This information can be specified here.
+4. tool-specific settings - `tool_specific_settings`: Here, the user can adjust the settings for the different tools, which are used in the submodule.
 
 #### Configure the execution of SnakeSplice
 Since the execution of SnakeSplice is based on Snakemake, the user can configure the execution of SnakeSplice via the command line or via a profile configuration file.
@@ -149,8 +150,6 @@ The respective setting options are listed and explained below.\
 | default-resources | [cpus=1, mem_mb=2048, time_min=60]                                                                                                                                               | Default resources for each job (can be overwritten in the rule definition)           |
 | resources         | [cpus=100, mem_mb=500000]                                                                                                                                                        | Resource constraints for the whole workflow                                          |
 | cluster           | "sbatch -t {resources.time_min} --mem={resources.mem_mb} -c {resources.cpus} -o logs_slurm/{rule}.%j.out -e logs_slurm/{rule}.%j.out --mail-type=FAIL --mail-user=user@mail.com" | Cluster command for the execution on a cluster (here: SLURM)                         |
-
-
 
 
 ### Execution
