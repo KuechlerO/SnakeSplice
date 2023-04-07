@@ -95,7 +95,6 @@ replace_external_scripts_and_styles <- function(input_html_file) {
   external_css_styles <- c('<link rel="stylesheet" type="text/css" href="csslib/bootstrap.css" />',
     '<link rel="stylesheet" type="text/css" href="csslib/reprise.table.bootstrap.css" />')
 
-
   # Replace external scripts with CDN versions
   jquery_cdn <- '<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>'
   jquery_datatable_cdn <- '<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>'
@@ -214,6 +213,36 @@ fix_table_width <- function(input_html_content) {
   return(input_html_content)
 }
 
+convert_numeric_entries <- function(input_html_content) {
+  "
+  Convert numeric entries to be displayed properly:
+    - Integer values are displayed without decimal places
+    - Float values are displayed with 2 decimal places
+    - Values < 0.01 are displayed in scientific notation
+  "
+  # Convert numeric entries to numeric values
+  original_table_init <- '"aoColumnDefs": ['
+  render_fct_entry <- "{
+                            targets: '_all',
+                            render: function (data, type, full, meta) {
+                                let float_data = parseFloat(data);
+                                if (Number.isInteger(float_data)) {
+                                    return float_data.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 });
+                                } else if (isNaN(float_data)) {
+                                    return data;
+                                } else {
+                                    if (float_data < 0.01) {
+                                        return float_data.toExponential(2);
+                                    } else {
+                                        return float_data.toLocaleString('en-US', { maximumFractionDigits: 3, minimumFractionDigits: 2 });
+                                    }
+                                }
+                            }
+                        },"
+  input_html_content <- sub(original_table_init, paste(original_table_init, render_fct_entry, sep="\n"), input_html_content, fixed=TRUE)
+  return(input_html_content)
+}
+
 
 # Main function
 main <- function() {
@@ -238,15 +267,14 @@ main <- function() {
 
     # Replace external scripts and styles with internal copies
     updated_html_file <- replace_external_scripts_and_styles(output_html_file)
-
     # Add index column functionality
     updated_html_file <- add_index_column_functionality(updated_html_file)
-
     # Add CSV download button
     updated_html_file <- add_csv_download_button(updated_html_file)
-
     # Fix table width
     updated_html_file <- fix_table_width(updated_html_file)
+    # Convert numeric entries
+    updated_html_file <- convert_numeric_entries(updated_html_file)
 
     # Write updated HTML file
     writeLines(updated_html_file, output_html_file)
