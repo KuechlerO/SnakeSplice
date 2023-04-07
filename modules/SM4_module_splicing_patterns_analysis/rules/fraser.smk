@@ -51,12 +51,12 @@ rule fraser_exploration_and_creation_of_fraser_dataset_object:
             directory(os.path.join(fraser_output_path, "fraser_exploration_plots")),
             patterns=["{filename}.jpg"],
             # Path relative to Snakefile
-            caption="../../../report_source/module4_splicing_patterns_analysis/fraser/caption.rst",
-            category=config["output_dir_module4_splicing_patterns_analysis"].replace("output/", ""),
+            caption="../../../report_source/module5_splicing_patterns_analysis/fraser/caption.rst",
+            category=config["output_dir_module5_splicing_patterns_analysis"].replace("output/", ""),
             subcategory="FRASER",
             labels={  # Set labels manually
                 "Tool": "FRASER",
-                "Modus": "Exploration",
+                "Mode": "Exploration",
                 "Type": "Plot",
                 "File:": "{filename}"
             }
@@ -116,12 +116,12 @@ rule fraser_create_fraser_analysis_plots:
             directory(os.path.join(fraser_output_path,"fraser_analysis_plots")),
             patterns=["{filename}.jpg"],
             # Path relative to Snakefile
-            caption="../../../report_source/module4_splicing_patterns_analysis/fraser/caption.rst",
-            category=config["output_dir_module4_splicing_patterns_analysis"].replace("output/", ""),
+            caption="../../../report_source/module5_splicing_patterns_analysis/fraser/caption.rst",
+            category=config["output_dir_module5_splicing_patterns_analysis"].replace("output/", ""),
             subcategory="FRASER",
             labels={  # Set labels manually
                 "Tool": "FRASER",
-                "Modus": "Analysis",
+                "Mode": "Analysis",
                 "Type": "Plot",
                 "File:": "{filename}"
             }
@@ -154,23 +154,23 @@ rule fraser_create_html_reports:
             directory(os.path.join(fraser_output_path, "html_reports")),
             patterns=["{filename}.csv.report.html"],
             # Path relative to Snakefile
-            caption="../../../report_source/module4_splicing_patterns_analysis/fraser/caption.rst",
-            category=config["output_dir_module4_splicing_patterns_analysis"].replace("output/",""),
+            caption="../../../report_source/module5_splicing_patterns_analysis/fraser/caption.rst",
+            category=config["output_dir_module5_splicing_patterns_analysis"].replace("output/",""),
             subcategory="FRASER",
             labels={  # Set labels manually
                 "Tool": "FRASER",
-                "Modus": "Analysis",
+                "Mode": "Analysis",
                 "Type": "Report",
                 "File:": "{filename}"
             }
         ),
         # Just two output examples... -> Total of 26 files will be generated
-        os.path.join(fraser_output_path,"html_reports", "fraser_csv_summary_table.csv.report.html"),
+        os.path.join(fraser_output_path, "html_reports", "fraser_csv_summary_table.csv.report.html"),
     params:
         input_files=lambda wildcards,input: input,
         data_separators=["," for i in range(1)],
         data_titles=["FRASER results" for i in range(1)],
-        info_texts=[workflow.source_path("../../../report_source/module4_splicing_patterns_analysis/fraser/info.html")],
+        info_texts=[workflow.source_path("../../../report_source/module5_splicing_patterns_analysis/fraser/info.html")],
         html_output_dir=lambda wildcards, output: output[0],
         html_output_file_basenames=lambda wildcards, input: [
             (os.path.basename(input_file) + ".report.html") for input_file in input
