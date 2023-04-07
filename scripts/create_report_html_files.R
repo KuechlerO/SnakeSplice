@@ -54,6 +54,9 @@ create_html_table <- function(input_file_path, sep="\t", title="Report Title", i
   if (nrow(input_table) == 0) {
     input_table[nrow(input_table)+1,] <- "No data"
   }
+  # Remove column with no header (R names them "X")
+  remove.cols <- names(input_table) %in% c("", "X")
+  input_table <- input_table[! remove.cols]
 
   # Use ReportingTools to automatically generate dynamic HTML documents
   html_report <- ReportingTools::HTMLReport(shortName=base_name, title=title,
@@ -144,6 +147,73 @@ add_index_column_functionality <- function(input_html_content) {
   return(input_html_content)
 }
 
+add_csv_download_button <- function(input_html_content) {
+  "
+  Add CSV download button to the HTML table.
+  Button has class 'buttons-csv'.
+  "
+  # DataTables: Select only CSV button in intialization
+  original_initialization <- "$(this).dataTable({"
+  new_initialization <- "$(this).dataTable({\n\"buttons\": [\"csvHtml5\"],"
+
+  # DataTables: Integration of buttons into DOM
+  original_dom_declaration <- "\"sDom\": \"<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>\","
+  new_dom_declaration <- "\"sDom\": \"<'row'<'span6'lB><'span6'f>r>t<'row'<'span6'i><'span6'p>>\","
+
+  # JS libraries
+  additional_js_lib_1 <- '<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>'
+  additional_js_lib_2 <- '<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>'
+
+  # CSS changes
+  # Make position relative and float right
+  additional_css_changes <- "<style> .buttons-csv { position: relative; float: right; } </style>"
+
+  # Button classes
+  # -> Add btn-primary class to CSV button (which has class 'buttons-csv')
+  add_class_script <- "<script>$(document).ready(function(){$('button.buttons-csv').addClass('btn btn-sm btn-primary mb-2');} );</script>"
+
+  # Introduce changes
+  # 0. DataTables initialization
+  input_html_content <- sub(original_initialization, new_initialization, input_html_content, fixed=TRUE)
+  # 1. DOM declaration
+  input_html_content <- sub(original_dom_declaration, new_dom_declaration, input_html_content, fixed=TRUE)
+  # 2. JS libraries
+  input_html_content <- sub("</head>", paste(additional_js_lib_1, additional_js_lib_2, "</head>", sep="\n"), input_html_content, fixed=TRUE)
+  # 3. CSS changes
+  input_html_content <- sub("</head>", paste(additional_css_changes, "</head>", sep="\n"), input_html_content, fixed=TRUE)
+  # 4. Button classes
+  input_html_content <- sub("</body>", paste(add_class_script, "</body>", sep="\n"), input_html_content, fixed=TRUE)
+
+  return(input_html_content)
+}
+
+fix_table_width <- function(input_html_content) {
+  "
+    Fix table width to 100% -> Make it scrollable
+  "
+  # Insert wrapper at initialization to manage scrolling (scrollX has issue with alignment of headers...)
+  original_initialization <- "$(this).dataTable({"
+  new_initialization <- paste(original_initialization, '"initComplete": function (settings, json) {
+      $(this).wrap("<div style=\'overflow:auto; width:100%; position:relative;\'></div>");
+    },', sep="\n")
+
+  # Ellipsis style for long text
+  additional_css_changes <- "<style> table.dataTable td  {
+        max-width: 250px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    </style>"
+
+  # 1. DataTables initialization
+  input_html_content <- sub(original_initialization, new_initialization, input_html_content, fixed=TRUE)
+  # 2. CSS changes
+  input_html_content <- sub("</head>", paste(additional_css_changes, "</head>", sep="\n"), input_html_content, fixed=TRUE)
+
+  return(input_html_content)
+}
+
 
 # Main function
 main <- function() {
@@ -171,6 +241,12 @@ main <- function() {
 
     # Add index column functionality
     updated_html_file <- add_index_column_functionality(updated_html_file)
+
+    # Add CSV download button
+    updated_html_file <- add_csv_download_button(updated_html_file)
+
+    # Fix table width
+    updated_html_file <- fix_table_width(updated_html_file)
 
     # Write updated HTML file
     writeLines(updated_html_file, output_html_file)
