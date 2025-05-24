@@ -1,7 +1,6 @@
 # SnakeSplice
-[!CAUTION]
-This repository is out of date.
-Please contact oliver.kuechler@charite.de to get more information and access to an up-to-date version
+> [!CAUTION]
+> This repository is out of date. Please contact oliver.kuechler@charite.de to get more information and access to an up-to-date version.
 
 ## About
 A Snakemake based modular Workflow that facilitates RNA-Seq analyses with a 
