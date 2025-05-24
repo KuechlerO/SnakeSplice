@@ -1,4 +1,7 @@
 # SnakeSplice
+[!CAUTION]
+This repository is out of date.
+Please contact oliver.kuechler@charite.de to get more information and access to an up-to-date version
 
 ## About
 A Snakemake based modular Workflow that facilitates RNA-Seq analyses with a 
@@ -27,8 +30,9 @@ The given parent workflow is a wrapper workflow, which includes the following su
 2. Module2: Gene Fusion Detection
 3. Module3: Transcript Quantification & Expression Analysis
 4. Module4: Splice Pattern Analysis
+5. Module5: Variant Detection from transcriptomic data
 
-![SnakeSplice Workflow Diagram](docs/snakesplice_workflow_diagram.png)
+![SnakeSplice Workflow Diagram](docs/SnakeSplice_Poster_ESHG2025_final.png)
 
 
 ## Software Requirements
